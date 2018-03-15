@@ -1,2 +1,2 @@
-# HSTA
-Developed for CS 506 at The University of Wisconsin-Madison
+# hearthstone-server
+Back end for Hearthstone Tournament App Project
