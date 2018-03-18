@@ -29,9 +29,10 @@ router.get('/update_decklist_name', function(req, res) {
 });
 
 /* create new user */
-router.post('/create_user', function(req, res) {
-    console.log(req.param('email'));
-  //db_api.create_user(req.param('email'));
+router.get('/create_user', function(req, res) {
+    var email = req.param('email');
+    var userid = req.param('userid');
+  db_api.create_user(userid, email);
   res.send('respond with a create user');
 });
 module.exports = router;
