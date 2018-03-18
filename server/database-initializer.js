@@ -1,7 +1,16 @@
 var mysql = require('mysql');
+var parse = require('csv-parse');
+var fs = require('fs');
+var cardCSV = 'fake-card-data.csv';
 var isCreated=0;
-//var csv_parser = require('csv-parse');
 
+
+//holds card csv data
+var cardOutput = [];
+fs.createReadStream(cardCSV).pipe(parse())
+    .on('data',function(csvrow) {
+        cardOutput.push(csvrow);
+    });
 
 //Create connection to the database
 var con;
@@ -73,5 +82,12 @@ con.connect(function(err) {
         });
     }
    console.log("Tables initialized");
+
+    //bulkloading csv into DB
+    //TODO figure out why the DB is allowing non-unique id's
+    con.query( "INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function (err) {
+            if (err) throw err;
+    });
+    console.log("Card columns initialized");
 });
 
