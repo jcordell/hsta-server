@@ -31,8 +31,10 @@ router.get('/add_deck', function(req, res) {
 router.get('/delete_deck', function(req, res) {
     var userid= req.query.userid;
     var deckcode= req.query.deckcode;
+
     db_api.delete_deck(userid, deckcode, function(err, deleteDeck){
         if(err){
+            console.log(err.message);
             console.log('Delete deck failed');
         } else{
             console.log(deleteDeck);
