@@ -30,8 +30,8 @@ router.get('/update_decklist_name', function(req, res) {
 
 /* create new user */
 router.get('/create_user', function(req, res) {
-    console.log(req.param('email'));
-  //db_api.create_user(req.param('email'));
-  res.send('respond with a create user');
+    var email = req.param('email');
+    var userid = req.param('userid');
+    db_api.create_user(userid, email);
 });
 module.exports = router;
