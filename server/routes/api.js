@@ -17,8 +17,7 @@ router.get('/add_deck', function(req, res) {
 
   db_api.add_deck(userid, deckcode, deckname, function(err, insertId) {
       if (err) {
-          console.log('Unable to create user');
-          // process.exit(1)
+          console.log('Unable to add deck');
       } else {
           res.send(insertId);
       }
@@ -48,7 +47,17 @@ router.get('/validate_decklist', function(req, res) {
 
 /* GET users listing. */
 router.get('/update_decklist_name', function(req, res) {
-  res.send('respond with a update_decklist_name');
+    var userid = req.query.userid;
+    var deckname = req.query.deckname;
+    var deckcode = req.query.deckcode;
+
+    db_api.update_decklist_name(userid, deckcode, deckname,function(err, response){
+        if(err){
+            console.log('Update deckname failed');
+        } else{
+            res.send(response);
+        }
+    });
 });
 
 /* create new user */
