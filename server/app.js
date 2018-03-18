@@ -39,4 +39,20 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+// database connection
+var db = require('./db')
+
+// Connect to MySQL on start
+db.connect(db.MODE_PRODUCTION, function(err) {
+    if (err) {
+        console.log('Unable to connect to MySQL.')
+        process.exit(1)
+    } else {
+        console.log('connected to database');
+        //app.listen(3000, function() {
+        //    console.log('Listening on port 3000...')
+        //})
+    }
+})
+
 module.exports = app;
