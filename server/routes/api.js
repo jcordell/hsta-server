@@ -15,7 +15,16 @@ router.get('/add_deck', function(req, res) {
 
 /* GET users listing. */
 router.get('/delete_deck', function(req, res) {
-  res.send('respond with a delete_deck');
+    var userid= req.query.userid;
+    var deckcode= req.query.deckcode;
+    db_api.delete_deck(userid, deckcode, function(err, deleteDeck){
+        if(err){
+            console.log('Delete deck failed');
+        } else{
+            console.log(deleteDeck);
+        }
+    });
+    res.send('delete deck');
 });
 
 /* GET users listing. */
@@ -30,7 +39,7 @@ router.get('/update_decklist_name', function(req, res) {
 
 /* create new user */
 router.get('/create_user', function(req, res) {
-    var email = req.param('email');
+    var email = req.query.email;
     db_api.create_user(email, function(err, insertId) {
         if (err) {
             console.log('Unable to create user');

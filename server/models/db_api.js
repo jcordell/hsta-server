@@ -7,6 +7,16 @@ exports.create_user = function(email, done) {
       done(null, result.insertId)
   })
 };
+
+exports.delete_deck= function(user_id, deck_id, done){
+
+    db.get().query('DELETE FROM ownedBy WHERE userid = ? AND deckcode = ?',user_id, deck_id , function(err, result){
+      if(err) return done(err);
+      done(null, result.deleteDeck);
+    })
+
+
+};
 /*
 exports.create = function(userId, text, done) {
     var values = [userId, text, new Date().toISOString()];
