@@ -1,16 +1,23 @@
 var mysql = require('mysql');
 var parse = require('csv-parse');
 var fs = require('fs');
-var cardCSV = 'fake-card-data.csv';
+var cardJSON = 'card-data.json';
 var isCreated=0;
 
 
-//holds card csv data
+//holds card json data
 var cardOutput = [];
-fs.createReadStream(cardCSV).pipe(parse())
+var cardID = [];
+var cardName = [];
+var cardClass = [];
+
+
+
+// creates the stream to read in CSV's from file if we ever use CSV's
+/*fs.createReadStream(cardCSV).pipe(parse())
     .on('data',function(csvrow) {
         cardOutput.push(csvrow);
-    });
+    }); */
 
 //Create connection to the database
 var con;
@@ -47,7 +54,7 @@ function createDB() {
 }
 
 var cmds = [
- //   "DROP TABLE",
+   "DROP TABLE card",
     "CREATE TABLE IF NOT EXISTS card (name VARCHAR(255), class VARCHAR(255), id VARCHAR(255), PRIMARY KEY (id)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS deck (class VARCHAR(255), deckcode VARCHAR(255) NOT NULL, PRIMARY KEY (deckcode)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
@@ -83,11 +90,40 @@ con.connect(function(err) {
     }
    console.log("Tables initialized");
 
+    /*
     //bulkloading csv into DB
     //TODO figure out why the DB is allowing non-unique id's
     con.query( "INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function (err) {
             if (err) throw err;
+    });*/
+
+    //bulkloading JSON files into DB
+    fs.readFile(cardJSON, 'utf8', function(err, data) {
+        if (err) throw err;
+
+        //JSON parse command
+        data = JSON.parse(data);
+        for(i = 0; i < data.length; i++) {
+
+            //pull info from JSON file
+            cardID[i] = (data[i].dbfId);
+            cardName[i] = (data[i].name);
+            cardClass[i] = (data[i].cardClass);
+
+
+            //put data into one array to easily import into DB
+            cardOutput.push([cardName[i],cardClass[i],cardID[i]]);
+            //cardOutput[i][0] = cardName[i];
+            //cardOutput[i][1] = cardClass[i];
+            //cardOutput[i][2] = cardID[i];
+
+        }
+        //inserts card data into DB
+        con.query("INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function(err) {
+            if (err) throw err;
+        });
+
     });
-    console.log("Card columns initialized");
+    console.log("Card table initialized");
 });
 
