@@ -10,6 +10,20 @@ router.get('/get_user_decklists', function(req, res) {
 
 /* GET users listing. */
 router.get('/add_deck', function(req, res) {
+  var userid = req.query.userid;
+  var deckcode = req.query.deckcode;
+  var deckname = req.query.deckname;
+  console.log(userid + " " + deckcode);
+
+  db_api.add_deck(userid, deckcode, deckname, function(err, insertId) {
+      if (err) {
+          console.log('Unable to create user');
+          // process.exit(1)
+      } else {
+          res.send(insertId);
+      }
+  });
+
   res.send('respond with an add deck' + req.param('deck_string'));
 });
 

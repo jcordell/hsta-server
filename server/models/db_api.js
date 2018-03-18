@@ -3,9 +3,24 @@ var db = require('../db.js');
 exports.create_user = function(email, done) {
   var values = [email];
   db.get().query('INSERT INTO user (email) VALUES(?)', values, function(err, result) {
-      if (err) return done(err);
+      if (err) {
+          console.log(err.message);
+          return done(err);
+      }
       done(null, result.insertId)
   })
+};
+
+exports.add_deck = function(userid, deckcode, deckname, done) {
+    var values = [userid, deckstring, deckname];
+    console.log("here");
+    db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', values, function(err, result) {
+        if (err) {
+            console.log(err.message);
+            return done(err);
+        }
+        done(null, result.insertId)
+    })
 };
 
 exports.delete_deck= function(user_id, deck_id, done){
