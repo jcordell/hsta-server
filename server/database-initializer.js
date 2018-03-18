@@ -113,9 +113,6 @@ con.connect(function(err) {
 
             //put data into one array to easily import into DB
             cardOutput.push([cardName[i],cardClass[i],cardID[i]]);
-            //cardOutput[i][0] = cardName[i];
-            //cardOutput[i][1] = cardClass[i];
-            //cardOutput[i][2] = cardID[i];
 
         }
         //inserts card data into DB
