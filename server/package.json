@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "test" : "mocha ./tests/models/test_add_deck.js --exit"
   },
   "dependencies": {
     "async": "^2.6.0",
@@ -15,7 +16,11 @@
     "jade": "~1.11.0",
     "morgan": "~1.9.0",
     "mysql": "^2.15.0",
+    "object": "^0.1.1",
     "serve-favicon": "~2.4.5",
     "should": "^13.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2"
   }
 }
