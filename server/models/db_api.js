@@ -48,8 +48,6 @@ exports.update_decklist_name = function(userid, deckcode, deckname, done) {
 };
 
 exports.validate_decklist = function(userid, deckcode, done) {
-    console.log('here');
-    console.log(deckcode.toString());
     var values = [userid, deckcode];
     db.get().query('SELECT deckcode FROM ownedBy ' +
         'WHERE userid = ? AND deckcode = ?', values, function(err, results) {
@@ -57,8 +55,6 @@ exports.validate_decklist = function(userid, deckcode, done) {
             console.log(err.message);
             return done(err);
         }
-        console.log('here2');
-        console.log(results);
         done(null, results);
     })
 }
