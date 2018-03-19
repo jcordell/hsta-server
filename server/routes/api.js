@@ -31,22 +31,76 @@ router.get('/get_user_decklists', function(req, res) {
 
 /* GET users listing. */
 router.get('/add_deck', function(req, res) {
+  var userid = req.query.userid;
+  var deckcode = req.query.deckcode;
+  var deckname = req.query.deckname;
+  console.log(userid + " " + deckcode);
+
+  db_api.add_deck(userid, deckcode, deckname, function(err, insertId) {
+      if (err) {
+          console.log('Unable to add deck');
+      } else {
+          res.send(insertId);
+      }
+  });
+
   res.send('respond with an add deck' + req.param('deck_string'));
 });
 
 /* GET users listing. */
 router.get('/delete_deck', function(req, res) {
-  res.send('respond with a delete_deck');
+    var userid= req.query.userid;
+    var deckcode= req.query.deckcode;
+
+    db_api.delete_deck(userid, deckcode, function(err, deleteDeck){
+        if(err){
+            console.log(err.message);
+            console.log('Delete deck failed');
+        } else{
+            console.log(deleteDeck);
+        }
+    });
+    res.send('delete deck');
 });
 
-/* GET users listing. */
+/* Checks if user has submitted a deckcode, returns boolean */
 router.get('/validate_decklist', function(req, res) {
-  res.send('respond with a validate_decklist');
+  var deckcode = req.query.deckcode;
+  var userid = req.query.userid;
+
+  // get user saved decklists from db
+  db_api.validate_decklist(userid, deckcode, function(err, response) {
+      // error retrieving from db
+      if(err) {
+          console.log("unable to validate decklist");
+      } else {
+          /*
+            response is list of deckcodes from user
+            if a result, the user has a submitted deck with same deckcode, return true
+           */
+          if(response.length == 1) {
+              res.send(JSON.stringify({hasDeck : true}));
+          }
+          else {
+              res.send(JSON.stringify({hasDeck : false}));
+          }
+      }
+  })
 });
 
 /* GET users listing. */
 router.get('/update_decklist_name', function(req, res) {
-  res.send('respond with a update_decklist_name');
+    var userid = req.query.userid;
+    var deckname = req.query.deckname;
+    var deckcode = req.query.deckcode;
+
+    db_api.update_decklist_name(userid, deckcode, deckname,function(err, response){
+        if(err){
+            console.log('Update deckname failed');
+        } else{
+            res.send(response);
+        }
+    });
 });
 
 /* create new user */
