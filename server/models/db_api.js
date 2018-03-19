@@ -12,7 +12,7 @@ exports.create_user = function(email, done) {
 };
 
 exports.get_user_decklists = function(userId, done) {
-    db.get().query("SELECT deckname FROM ownedBy WHERE userid = ?", [userId], function (err, rows) {
+    db.get().query("SELECT deckname, deckcode FROM ownedBy WHERE userid = ?", [userId], function (err, rows) {
         if (err) return done(err);
         done(null, rows)
     })

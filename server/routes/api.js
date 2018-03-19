@@ -7,25 +7,17 @@ var db_api = require('../models/db_api');
 router.get('/get_user_decklists', function(req, res) {
     var userid = req.query.userid;
     db_api.get_user_decklists(userid, function(err, data){
-        var deckName;
         if (err) {
             console.log(err.message);
             console.log('Unable to get decklists');
-        }
-            else {
-            //data[i].deckname will obtain the deckname for the current row of data
-            console.log("decklists found: ");
+        } else {
+            // reformat deck info to an array
+            var deck_info = [];
             for (var i = 0; i < data.length; i++)
-                if (i == 0) res.write('decklist found:' );
-                deckName = data[0].deckname;
+                deck_info.push([data[i].deckname, data[i].deckcode]);
 
-                //TODO fix decklists not being sent by res - not sure how that works
-                //Commeneted res.write/send were not really working together
-                //Also, res.write(deckName) wouldn't send anything at all
-                console.log(deckName);
-                //res.write(deckName);
-            }
-           // res.send('test');
+            res.send(deck_info);
+        }
     });
 });
 
