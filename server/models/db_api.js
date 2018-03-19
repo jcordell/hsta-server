@@ -7,6 +7,14 @@ exports.create_user = function(email, done) {
       done(null, result.insertId)
   })
 };
+
+
+exports.get_user_decklists = function(userId, done) {
+    db.get().query("SELECT deckname FROM ownedBy WHERE userid = ?", [userId], function (err, rows) {
+        if (err) return done(err);
+        done(null, rows)
+    })
+};
 /*
 exports.create = function(userId, text, done) {
     var values = [userId, text, new Date().toISOString()];

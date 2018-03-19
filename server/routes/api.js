@@ -5,7 +5,28 @@ var db_api = require('../models/db_api');
 
 /* GET user decklists. */
 router.get('/get_user_decklists', function(req, res) {
-  res.send('respond with a get_user_decklist');
+    var userid = req.query.userid;
+    db_api.get_user_decklists(userid, function(err, data){
+        var deckName;
+        if (err) {
+            console.log(err.message);
+            console.log('Unable to get decklists');
+        }
+            else {
+            //data[i].deckname will obtain the deckname for the current row of data
+            console.log("decklists found: ");
+            for (var i = 0; i < data.length; i++)
+                if (i == 0) res.write('decklist found:' );
+                deckName = data[0].deckname;
+
+                //TODO fix decklists not being sent by res - not sure how that works
+                //Commeneted res.write/send were not really working together
+                //Also, res.write(deckName) wouldn't send anything at all
+                console.log(deckName);
+                //res.write(deckName);
+            }
+           // res.send('test');
+    });
 });
 
 /* GET users listing. */
@@ -30,7 +51,7 @@ router.get('/update_decklist_name', function(req, res) {
 
 /* create new user */
 router.get('/create_user', function(req, res) {
-    var email = req.param('email');
+    var email = req.query.email;
     db_api.create_user(email, function(err, insertId) {
         if (err) {
             console.log('Unable to create user');
