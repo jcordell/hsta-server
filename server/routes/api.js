@@ -42,9 +42,29 @@ router.get('/delete_deck', function(req, res) {
     res.send('delete deck');
 });
 
-/* GET users listing. */
+/* Checks if user has submitted a deckcode, returns boolean */
 router.get('/validate_decklist', function(req, res) {
-  res.send('respond with a validate_decklist');
+  var deckcode = req.query.deckcode;
+  var userid = req.query.userid;
+
+  // get user saved decklists from db
+  db_api.validate_decklist(userid, deckcode, function(err, response) {
+      // error retrieving from db
+      if(err) {
+          console.log("unable to validate decklist");
+      } else {
+          /*
+            response is list of deckcodes from user
+            if a result, the user has a submitted deck with same deckcode, return true
+           */
+          if(response.length == 1) {
+              res.send(JSON.stringify({hasDeck : true}));
+          }
+          else {
+              res.send(JSON.stringify({hasDeck : false}));
+          }
+      }
+  })
 });
 
 /* GET users listing. */
