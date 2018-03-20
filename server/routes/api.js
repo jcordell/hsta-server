@@ -3,7 +3,9 @@ var router = express.Router();
 var app= require('../app');
 var db_api = require('../models/db_api');
 
-/* GET user decklists. */
+/* GET user decklists.
+* Input: params: userid
+* Return: array of decklists. Example: [["deckname1", deckcode1],["deckname2", deckcode2"]]*/
 router.get('/get_user_decklists', function(req, res) {
     var userid = req.query.userid;
     db_api.get_user_decklists(userid, function(err, data){
@@ -21,7 +23,8 @@ router.get('/get_user_decklists', function(req, res) {
     });
 });
 
-/* GET users listing. */
+/* input: params: userid, deckcode, deckname
+ * return: { 'success' : true/false, 'error' : none/error_code/error_message } */
 router.get('/add_deck', function(req, res) {
   var userid = req.query.userid;
   var deckcode = req.query.deckcode;
@@ -39,7 +42,8 @@ router.get('/add_deck', function(req, res) {
   res.send('respond with an add deck' + req.param('deck_string'));
 });
 
-/* GET users listing. */
+/* input: params: userid, deckcode
+* return: { 'success' : true/false, 'error' : none/error_code }*/
 router.get('/delete_deck', function(req, res) {
     var userid= req.query.userid;
     var deckcode= req.query.deckcode;
@@ -55,7 +59,9 @@ router.get('/delete_deck', function(req, res) {
     res.send('delete deck');
 });
 
-/* Checks if user has submitted a deckcode, returns boolean */
+/* Checks if user has submitted a deckcode, returns boolean
+ * input: params: userid, deckcode
+ * return: { 'hasDeck' : true/false, 'error' : none/error_code }*/
 router.get('/validate_decklist', function(req, res) {
   var deckcode = req.query.deckcode;
   var userid = req.query.userid;
@@ -80,7 +86,9 @@ router.get('/validate_decklist', function(req, res) {
   })
 });
 
-/* GET users listing. */
+/* GET users listing.
+ * input: params: userid, deckname, deckcode
+  * return: { 'success' : true/false, 'error' : none/error_code }*/
 router.get('/update_decklist_name', function(req, res) {
     var userid = req.query.userid;
     var deckname = req.query.deckname;
@@ -95,7 +103,9 @@ router.get('/update_decklist_name', function(req, res) {
     });
 });
 
-/* create new user */
+/* create new user
+ * input: param: email
+  * return: { 'success' : true/false, 'error' : none/error_code }*/
 router.get('/create_user', function(req, res) {
     var email = req.query.email;
     db_api.create_user(email, function(err, insertId) {
