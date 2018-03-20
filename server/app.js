@@ -55,4 +55,40 @@ db.connect(db.MODE_PRODUCTION, function(err) {
     }
 })
 
-module.exports = app;
+/*
+connect to database specified
+export still returns app
+usage: var app = require(app.js)(database_mode)
+ */
+module.exports = function(database_mode) {
+    // Connect to MySQL on start
+    if (database_mode == 'prod') {
+        db.connect(db.MODE_PRODUCTION, function(err) {
+                if (err) {
+                    console.log('Unable to connect to MySQL.')
+                    process.exit(1)
+                } else {
+                    console.log('connected to database');
+                    //app.listen(3000, function() {
+                    //    console.log('Listening on port 3000...')
+                    //})
+                }
+            }
+    )} else if (database_mode == 'test') {
+        db.connect(db.MODE_TEST, function(err) {
+            if (err) {
+                console.log('Unable to connect to MySQL.')
+                process.exit(1)
+            } else {
+                console.log('connected to database');
+                //app.listen(3000, function() {
+                //    console.log('Listening on port 3000...')
+                //})
+            }
+        }
+        )} else {
+            console.log('app.js usage: var app = require(app.js)(database_mode)')
+            process.exit(1);
+        }
+    return app;
+};

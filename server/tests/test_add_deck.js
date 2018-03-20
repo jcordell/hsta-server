@@ -1,5 +1,5 @@
-var db_api = require('../../models/db_api');
-var db = require('../../db.js');
+var db_api = require('../models/db_api');
+var db = require('../db.js');
 
 // Connect to test database
 db.connect(db.MODE_TEST, function(err) {
@@ -11,10 +11,13 @@ db.connect(db.MODE_TEST, function(err) {
     }
 });
 
-describe('Normal functionality', function() {
+describe('Add Deck Normal functionality', function() {
     it('Test add_deck expected input', function(done) {
+        // remove entry from database to prevent duplicate key
+        db.get().query('DELETE FROM ownedBy WHERE userid = 3 AND deckcode = \'test_deckcode\'');
+
         // fails if primary key (userid, deckid) isn't unique, need a real test db
-        db_api.add_deck(122, 123, 'Test deckcode', function(err, insertId) {
+        db_api.add_deck(3, 'test_deckcode', 'test_deckname', function(err, insertId) {
             if (err) {
                 console.log(err.message);
                 done(new Error('Unable to add deck with expected input'));
@@ -22,7 +25,7 @@ describe('Normal functionality', function() {
             else {
                 // make sure deckcode got added
                 db.get().query('SELECT deckcode FROM ownedBy ' +
-                    'WHERE userid = 1 AND deckcode = 123', function(err, result) {
+                    'WHERE userid = 3 AND deckcode = \'test_deckcode\'', function(err, result) {
                     if (err) {
                         console.log(err.message);
                         return done(new Error('Unable to read from database'));

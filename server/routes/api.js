@@ -17,13 +17,12 @@ router.get('/get_user_decklists', function(req, res) {
             var deck_info = [];
             for (var i = 0; i < data.length; i++)
                 deck_info.push([data[i].deckname, data[i].deckcode]);
-
             res.send(deck_info);
         }
     });
 });
 
-/* input: params: userid, deckcode, deckname
+/* input: params: userid, deckcode, deckname (Josh test)
  * return: { 'success' : true/false, 'error' : none/error_code/error_message } */
 router.get('/add_deck', function(req, res) {
   var userid = req.query.userid;
@@ -34,12 +33,11 @@ router.get('/add_deck', function(req, res) {
   db_api.add_deck(userid, deckcode, deckname, function(err, insertId) {
       if (err) {
           console.log('Unable to add deck');
+          res.send(JSON.stringify({ success: false, error: err.message }))
       } else {
-          res.send(insertId);
+          res.send(JSON.stringify({ success: true }));
       }
   });
-
-  res.send('respond with an add deck' + req.param('deck_string'));
 });
 
 /* input: params: userid, deckcode
@@ -80,7 +78,7 @@ router.get('/validate_decklist', function(req, res) {
               res.send(JSON.stringify({hasDeck : true}));
           }
           else {
-              res.send(JSON.stringify({hasDeck : false}));
+              res.send(JSON.stringify({hasDeck : false, error : null}));
           }
       }
   })
