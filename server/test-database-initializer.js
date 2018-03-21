@@ -58,11 +58,12 @@ function createDB() {
 }
 
 var cmds = [
-    "DROP TABLE card",
-    "DROP TABLE deck",
-    "DROP TABLE has",
-    "DROP TABLE user",
-    "DROP TABLE ownedBy",
+    "DROP TABLE IF EXISTS ownedBy",
+    "DROP TABLE IF EXISTS card",
+    "DROP TABLE IF EXISTS deck",
+    "DROP TABLE IF EXISTS has",
+    "DROP TABLE IF EXISTS user",
+
     "CREATE TABLE IF NOT EXISTS card (name VARCHAR(255), class VARCHAR(255), id VARCHAR(255), PRIMARY KEY (id)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS deck (class VARCHAR(255), deckcode VARCHAR(255) NOT NULL, PRIMARY KEY (deckcode)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
@@ -120,9 +121,10 @@ con.connect(function(err) {
         con.query("INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function(err) {
             if (err) throw err;
         });
+        console.log("Card table initialized");
 
     });
-    console.log("Card table initialized");
+
 
     //initializes deck table
     fs.readFile(deckJSON, 'utf8', function(err, data) {
@@ -138,9 +140,10 @@ con.connect(function(err) {
         }
         con.query("INSERT INTO deck (class, deckcode) VALUES ?", [deckOutput], function (err) {
             if (err) throw err;
-        })
+        });
+        console.log("Deck table initialized");
     });
-    console.log("Deck table initialized");
+
 
     //initializes user table
     //no idea how this will work with autoincrementing
@@ -153,14 +156,14 @@ con.connect(function(err) {
         for(i = 0; i < data.length; i++){
             userEmail[i] = (data[i].email);
 
-            //might not need this
-            //userOutput.push([userEmail[i]]);
+            userOutput.push([userEmail[i]]);
         }
-        con.query("INSERT INTO deck (email) VALUES ?", [userEmail], function (err) {
+        con.query("INSERT INTO user (email) VALUES ?", [userOutput], function (err) {
             if (err) throw err;
         })
+        console.log("User table initialized");
     });
-    console.log("User table initialized");
+
 
     //initializes ownedby table
     fs.readFile(ownedJSON, 'utf8', function(err, data) {
@@ -181,8 +184,10 @@ con.connect(function(err) {
         con.query("INSERT INTO ownedBy (deckname, userid, deckcode) VALUES ?", [ownedOutput], function (err) {
             if (err) throw err;
         })
+        console.log("Owned-by table initialized");
     });
-    console.log("Owned-by table initialized");
+
+
 
 });
 
