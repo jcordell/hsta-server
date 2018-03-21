@@ -2,6 +2,9 @@ var mysql = require('mysql');
 var parse = require('csv-parse');
 var fs = require('fs');
 var cardJSON = 'card-data.json';
+var deckJSON = 'deck-data.json';
+var userJSON = 'user-data.json';
+var ownedJSON = 'ownedBy-data.json';
 var isCreated=0;
 
 
@@ -10,6 +13,7 @@ var cardOutput = [];
 var cardID = [];
 var cardName = [];
 var cardClass = [];
+var deckCode = [];
 
 
 
@@ -55,6 +59,10 @@ function createDB() {
 
 var cmds = [
     "DROP TABLE card",
+    "DROP TABLE deck",
+    "DROP TABLE has",
+    "DROP TABLE user",
+    "DROP TABLE ownedBy",
     "CREATE TABLE IF NOT EXISTS card (name VARCHAR(255), class VARCHAR(255), id VARCHAR(255), PRIMARY KEY (id)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS deck (class VARCHAR(255), deckcode VARCHAR(255) NOT NULL, PRIMARY KEY (deckcode)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
@@ -90,13 +98,6 @@ con.connect(function(err) {
     }
     console.log("Tables initialized");
 
-    /*
-    //bulkloading csv into DB
-    //TODO figure out why the DB is allowing non-unique id's
-    con.query( "INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function (err) {
-            if (err) throw err;
-    });*/
-
     //bulkloading JSON files into DB
     fs.readFile(cardJSON, 'utf8', function(err, data) {
         if (err) throw err;
@@ -122,5 +123,66 @@ con.connect(function(err) {
 
     });
     console.log("Card table initialized");
+
+    //initializes deck table
+    fs.readFile(deckJSON, 'utf8', function(err, data) {
+        if (err) throw err;
+        var deckOutput = [];
+
+        data = JSON.parse(data);
+        for(i = 0; i < data.length; i++){
+            cardClass[i] = (data[i].class);
+            deckCode[i] = (data[i].deckCode);
+
+            deckOutput.push([cardClass[i],deckCode[i]]);
+        }
+        con.query("INSERT INTO deck (class, deckcode) VALUES ?", [deckOutput], function (err) {
+            if (err) throw err;
+        })
+    });
+    console.log("Deck table initialized");
+
+    //initializes user table
+    //no idea how this will work with autoincrementing
+    fs.readFile(userJSON, 'utf8', function(err, data) {
+        if (err) throw err;
+        var userOutput = [];
+        var userEmail = [];
+
+        data = JSON.parse(data);
+        for(i = 0; i < data.length; i++){
+            userEmail[i] = (data[i].email);
+
+            //might not need this
+            //userOutput.push([userEmail[i]]);
+        }
+        con.query("INSERT INTO deck (email) VALUES ?", [userEmail], function (err) {
+            if (err) throw err;
+        })
+    });
+    console.log("User table initialized");
+
+    //initializes ownedby table
+    fs.readFile(ownedJSON, 'utf8', function(err, data) {
+        if (err) throw err;
+        var ownedOutput = [];
+        var userid = [];
+        var deckName = [];
+
+        data = JSON.parse(data);
+        for(i = 0; i < data.length; i++){
+            userid[i] = (data[i].userid);
+            deckName[i] = (data[i].deckName);
+            deckCode[i] = (data[i].deckCode);
+
+            //might not need this
+            ownedOutput.push([deckName[i],userid[i], deckCode[i]]);
+        }
+        con.query("INSERT INTO ownedBy (deckname, userid, deckcode) VALUES ?", [ownedOutput], function (err) {
+            if (err) throw err;
+        })
+    });
+    console.log("Owned-by table initialized");
+
 });
 

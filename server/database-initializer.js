@@ -2,14 +2,16 @@ var mysql = require('mysql');
 var parse = require('csv-parse');
 var fs = require('fs');
 var cardJSON = 'card-data.json';
+var deckJSON = 'deck-data.json';
 var isCreated=0;
 
 
-//holds card json data
+//holds json data
 var cardOutput = [];
 var cardID = [];
 var cardName = [];
 var cardClass = [];
+var deckCode = [];
 
 
 
@@ -90,13 +92,6 @@ con.connect(function(err) {
     }
    console.log("Tables initialized");
 
-    /*
-    //bulkloading csv into DB
-    //TODO figure out why the DB is allowing non-unique id's
-    con.query( "INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function (err) {
-            if (err) throw err;
-    });*/
-
     //bulkloading JSON files into DB
     fs.readFile(cardJSON, 'utf8', function(err, data) {
         if (err) throw err;
@@ -122,5 +117,6 @@ con.connect(function(err) {
 
     });
     console.log("Card table initialized");
+
 });
 
