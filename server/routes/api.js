@@ -2,6 +2,15 @@ var express = require('express');
 var router = express.Router();
 var app= require('../app');
 var db_api = require('../models/db_api');
+var deckstrings = require('deckstrings');
+
+decode = function(deckcode) {
+    try {
+        return deckstrings.decode(deckcode);
+    } catch (e) {
+        return null
+    }
+}
 
 /* GET user decklists.
 * Input: params: userid
@@ -11,12 +20,24 @@ router.get('/get_user_decklists', function(req, res) {
     db_api.get_user_decklists(userid, function(err, data){
         if (err) {
             console.log(err.message);
-            console.log('Unable to get decklists');
+            res.send(err.message);
         } else {
             // reformat deck info to an array
             var deck_info = [];
-            for (var i = 0; i < data.length; i++)
-                deck_info.push([data[i].deckname, data[i].deckcode]);
+            for (var i = 0; i < data.length; i++) {
+                // get decoded deckcode data
+                deckcode = data[i].deckcode;
+                decoded_deckstring = decode(deckcode);
+
+                // if unable to decode or invalid deckstring
+                if (decoded_deckstring == null) {
+                    decoded_deckstring = {};
+                }
+
+                decoded_deckstring['deckname'] = data[i].deckname;
+                decoded_deckstring['deckcode'] = data[i].deckcode;
+                deck_info.push([decoded_deckstring]);
+            }
             res.send(deck_info);
         }
     });
