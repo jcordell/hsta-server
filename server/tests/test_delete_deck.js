@@ -43,26 +43,29 @@ describe('Basic Delete Deck functionality', function()
     it('Test delete_deck for single input', function(done)
     {
 
+        /*
         //db.get().query('DELETE FROM ownedBy WHERE deckcode = ');
         db.get().query('TRUNCATE TABLE ownedBy');
 
         // add a single entry into the database to be deleted
-        var addValues= [1234, 'dc1', 'test1'];
+        var addValues= ['fakeemailtest', 'dc1', 'test1'];
 
 
         // separate variables in order to print detailed error message
-        var userid= 1234;
+        var userid= 8;
         var deckcode= 'dc1';
 
         //add a deck to the database to be deleted
 
 
        db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', addValues);
+       */
 
 
                 //run delete deck api on recently added deck
-               db_api.delete_deck(userid, deckcode, function(err, delStat)
+               db_api.delete_deck(8, 'dc1', function(err, delStat)
                {
+                   console.log(delStat)
                    if (err)
                    {
                        done(new Error(err.message));

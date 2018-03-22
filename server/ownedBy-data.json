@@ -33,5 +33,10 @@
     "deckName": "murloc paladin",
     "userid": 7,
     "deckCode": "AAECAZ8FBMUDrwe5wQK36QIN2wOnBfIFpwixCNOqAtmuAtO8ArPBAp3CArHCAuPLAvjSAgA="
+  },
+  {
+    "deckName": "test1",
+    "userid": 8,
+    "deckCode": "dc1"
   }
 ]

@@ -71,12 +71,14 @@ router.get('/delete_deck', function(req, res) {
     var userid= req.query.userid;
     var deckcode= req.query.deckcode;
 
-    db_api.delete_deck(userid, deckcode, function(err, deleteDeck){
+    db_api.delete_deck(userid, deckcode, function(err, data){
         if(err){
             console.log(err.message);
             console.log('Delete deck failed');
         } else{
-            console.log(deleteDeck);
+            console.log(req.query.userid);
+            console.log(req.query.deckcode);
+            console.log(data);
         }
     });
     res.send('delete deck');

@@ -43,7 +43,7 @@ describe('Get Decklists Normal functionality', function() {
                     console.log(decoded_deckstring);
                     // if unable to decode or invalid deckstring
                     if (decoded_deckstring == null) {
-                        decoded_deckstring = {};
+                        done(new Error('Deckstring is null'));
                     }
                     cardCounter = 0;
                     for (var x = 0; x < decoded_deckstring.cards.length; x++)
