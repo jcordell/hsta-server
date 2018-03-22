@@ -3,6 +3,7 @@ var router = express.Router();
 var app= require('../app');
 var db_api = require('../models/db_api');
 var deckstrings = require('deckstrings');
+//var decode = require("deckstrings");
 
 decode = function(deckcode) {
     try {
@@ -24,18 +25,21 @@ router.get('/get_user_decklists', function(req, res) {
         } else {
             // reformat deck info to an array
             var deck_info = [];
+            var decoded_deckstring = [];
+            var deckcodes = [];
             for (var i = 0; i < data.length; i++) {
                 // get decoded deckcode data
-                deckcode = data[i].deckcode;
-                decoded_deckstring = decode(deckcode);
+                deckcodes[i] = data[i].deckcode;
+
+                decoded_deckstring = decode(deckcodes[i]);
 
                 // if unable to decode or invalid deckstring
                 if (decoded_deckstring == null) {
                     decoded_deckstring = {};
                 }
 
-                decoded_deckstring['deckname'] = data[i].deckname;
-                decoded_deckstring['deckcode'] = data[i].deckcode;
+                //decoded_deckstring['deckname'+1] = data[i].deckname;
+                //decoded_deckstring['deckcode'+1] = data[i].deckcode;
                 deck_info.push([decoded_deckstring]);
             }
             res.send(JSON.stringify({success : true, decks: deck_info}));
