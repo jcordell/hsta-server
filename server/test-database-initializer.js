@@ -100,96 +100,98 @@ con.connect(function(err) {
     console.log("Tables initialized");
 
     //bulkloading JSON files into DB
-    fs.readFile(cardJSON, 'utf8', function(err, data) {
-        if (err) throw err;
-
-        //JSON parse command
-        data = JSON.parse(data);
-        for(i = 0; i < data.length; i++) {
-
-            //pull info from JSON file
-            cardID[i] = (data[i].dbfId);
-            cardName[i] = (data[i].name);
-            cardClass[i] = (data[i].cardClass);
-
-
-            //put data into one array to easily import into DB
-            cardOutput.push([cardName[i],cardClass[i],cardID[i]]);
-
-        }
-        //inserts card data into DB
-        con.query("INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function(err) {
+    for(var x = 0; x < 1; x++) {
+        fs.readFile(cardJSON, 'utf8', function (err, data) {
             if (err) throw err;
-        });
-        console.log("Card table initialized");
 
-    });
+            //JSON parse command
+            data = JSON.parse(data);
+            for (i = 0; i < data.length; i++) {
 
-
-    //initializes deck table
-    fs.readFile(deckJSON, 'utf8', function(err, data) {
-        if (err) throw err;
-        var deckOutput = [];
-
-        data = JSON.parse(data);
-        for(i = 0; i < data.length; i++){
-            cardClass[i] = (data[i].class);
-            deckCode[i] = (data[i].deckCode);
-
-            deckOutput.push([cardClass[i],deckCode[i]]);
-        }
-        con.query("INSERT INTO deck (class, deckcode) VALUES ?", [deckOutput], function (err) {
-            if (err) throw err;
-        });
-        console.log("Deck table initialized");
-    });
+                //pull info from JSON file
+                cardID[i] = (data[i].dbfId);
+                cardName[i] = (data[i].name);
+                cardClass[i] = (data[i].cardClass);
 
 
-    //initializes user table
-    fs.readFile(userJSON, 'utf8', function(err, data) {
-        if (err) throw err;
-        var userOutput = [];
-        var userEmail = [];
+                //put data into one array to easily import into DB
+                cardOutput.push([cardName[i], cardClass[i], cardID[i]]);
 
-        data = JSON.parse(data);
-        for(i = 0; i < data.length; i++){
-            userEmail[i] = (data[i].email);
-
-            userOutput.push([userEmail[i]]);
-        }
-        con.query("INSERT INTO user (email) VALUES ?", [userOutput], function (err) {
-            if (err) throw err;
-        })
-        console.log("User table initialized");
-    });
-
-
-    //initializes ownedby table
-    //works when commented out, init is run and then uncomment, and run init again.
-    //if you run init twice it stops working.
-    fs.readFile(ownedJSON, 'utf8', function(err, data) {
-        if (err) throw err;
-        var ownedOutput = [];
-        var userid = [];
-        var deckName = [];
-
-        data = JSON.parse(data);
-        for(i = 0; i < data.length; i++){
-            userid[i] = (data[i].userid);
-            deckName[i] = (data[i].deckName);
-            deckCode[i] = (data[i].deckCode);
-
-            //might not need this
-            ownedOutput.push([deckName[i],userid[i], deckCode[i]]);
-        }
-        con.query("INSERT INTO ownedBy (deckname, userid, deckcode) VALUES ?", [ownedOutput], function (err) {
-            if (err) {
-                console.log("error inserting into ownedby");
-                throw err;
             }
-        })
-        console.log("Owned-by table initialized");
-    });
+            //inserts card data into DB
+            con.query("INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function (err) {
+                if (err) throw err;
+            });
+            console.log("Card table initialized");
+
+        });
+
+
+        //initializes deck table
+        fs.readFile(deckJSON, 'utf8', function (err, data) {
+            if (err) throw err;
+            var deckOutput = [];
+
+            data = JSON.parse(data);
+            for (i = 0; i < data.length; i++) {
+                cardClass[i] = (data[i].class);
+                deckCode[i] = (data[i].deckCode);
+
+                deckOutput.push([cardClass[i], deckCode[i]]);
+            }
+            con.query("INSERT INTO deck (class, deckcode) VALUES ?", [deckOutput], function (err) {
+                if (err) throw err;
+            });
+            console.log("Deck table initialized");
+        });
+
+
+        //initializes user table
+        fs.readFile(userJSON, 'utf8', function (err, data) {
+            if (err) throw err;
+            var userOutput = [];
+            var userEmail = [];
+
+            data = JSON.parse(data);
+            for (i = 0; i < data.length; i++) {
+                userEmail[i] = (data[i].email);
+
+                userOutput.push([userEmail[i]]);
+            }
+            con.query("INSERT INTO user (email) VALUES ?", [userOutput], function (err) {
+                if (err) throw err;
+            });
+            console.log("User table initialized");
+        });
+
+
+        //initializes ownedby table
+        //works when commented out, init is run and then uncomment, and run init again.
+        //if you run init twice it stops working.
+        fs.readFile(ownedJSON, 'utf8', function (err, data) {
+            if (err) throw err;
+            var ownedOutput = [];
+            var userid = [];
+            var deckName = [];
+
+            data = JSON.parse(data);
+            for (i = 0; i < data.length; i++) {
+                userid[i] = (data[i].userid);
+                deckName[i] = (data[i].deckName);
+                deckCode[i] = (data[i].deckCode);
+
+                //might not need this
+                ownedOutput.push([deckName[i], userid[i], deckCode[i]]);
+            }
+            con.query("INSERT INTO ownedBy (deckname, userid, deckcode) VALUES ?", [ownedOutput], function (err) {
+                if (err) {
+                    console.log("error inserting into ownedby");
+                    throw err;
+                }
+            });
+            console.log("Owned-by table initialized");
+        });
+    }
 
 
 
