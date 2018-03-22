@@ -20,7 +20,7 @@ router.get('/get_user_decklists', function(req, res) {
     db_api.get_user_decklists(userid, function(err, data){
         if (err) {
             console.log(err.message);
-            res.send(err.message);
+            res.send(JSON.stringify({success : false, mesage : err.message}));
         } else {
             // reformat deck info to an array
             var deck_info = [];
@@ -38,7 +38,7 @@ router.get('/get_user_decklists', function(req, res) {
                 decoded_deckstring['deckcode'] = data[i].deckcode;
                 deck_info.push([decoded_deckstring]);
             }
-            res.send(deck_info);
+            res.send(JSON.stringify({success : true, decks: deck_info}));
         }
     });
 });
@@ -122,17 +122,39 @@ router.get('/update_decklist_name', function(req, res) {
     });
 });
 
+/*
+Stub for logging in a user
+Takes in an email and returns userid
+If email not in database, returns info about that
+ */
+router.get('/login', function(req, res) {
+   var email = req.query.email;
+   db_api.login(email, function(err, userid) {
+
+       // user not created
+       if(userid == null) {
+            res.send(JSON.stringify({success : false, message : 'Email not yet registered'}));
+        } else {
+            res.send(JSON.stringify({success : true, id : userid}));
+        }
+   })
+});
+
 /* create new user
  * input: param: email
   * return: { 'success' : true/false, 'error' : none/error_code }*/
 router.get('/create_user', function(req, res) {
     var email = req.query.email;
-    db_api.create_user(email, function(err, insertId) {
-        if (err) {
-            console.log('Unable to create user');
-            // process.exit(1)
-        } else {
-            console.log(insertId);
+    db_api.create_user(email, function(err, userid) {
+
+        // likely user already registered
+        if(err) {
+            console.log(err.message);
+            res.send(JSON.stringify({success : false, error: err.message}));
+
+        }
+        else {
+            res.send(JSON.stringify({success : true, id : userid}));
         }
     });
 });

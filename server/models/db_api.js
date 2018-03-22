@@ -64,4 +64,18 @@ exports.validate_decklist = function(userid, deckcode, done) {
         }
         done(null, results);
     })
+};
+
+exports.login = function(email, done) {
+    var values = [email];
+    db.get().query('SELECT userid FROM user WHERE email = ?', values, function(err, results) {
+        if(err) {
+            console.log(err.message);
+            return done(error);
+        } else if (results[0] == null) {
+            return done(null, null);
+        } else {
+            done(null, results[0].userid);
+        }
+    })
 }
