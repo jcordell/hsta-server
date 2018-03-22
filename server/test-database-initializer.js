@@ -146,7 +146,6 @@ con.connect(function(err) {
 
 
     //initializes user table
-    //no idea how this will work with autoincrementing
     fs.readFile(userJSON, 'utf8', function(err, data) {
         if (err) throw err;
         var userOutput = [];
@@ -166,6 +165,8 @@ con.connect(function(err) {
 
 
     //initializes ownedby table
+    //works when commented out, init is run and then uncomment, and run init again.
+    //if you run init twice it stops working.
     fs.readFile(ownedJSON, 'utf8', function(err, data) {
         if (err) throw err;
         var ownedOutput = [];
@@ -182,7 +183,10 @@ con.connect(function(err) {
             ownedOutput.push([deckName[i],userid[i], deckCode[i]]);
         }
         con.query("INSERT INTO ownedBy (deckname, userid, deckcode) VALUES ?", [ownedOutput], function (err) {
-            if (err) throw err;
+            if (err) {
+                console.log("error inserting into ownedby");
+                throw err;
+            }
         })
         console.log("Owned-by table initialized");
     });
