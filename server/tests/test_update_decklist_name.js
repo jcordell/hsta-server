@@ -26,26 +26,7 @@ describe('Test Basic Update Decklist Name functionality', function()
 {
     it('Test update_deckname for single row', function(done)
     {
-     //   db.get().query('TRUNCATE TABLE ownedBy');
-      var addValues= [1234, 'dc1234', 'test1'];
-      var newDeckname= 'newdeckname1';
-        //delete previously added deck to avoid duplicate type error
-        db.get().query('DELETE FROM ownedBy WHERE userid = ' + addValues[0] +' AND deckcode = ' + addValues[2]);
-
-
-        db_api.delete_deck(1234, 'dc1234');
-
-        //add decks to the database to be updated
-        db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', addValues, function(err)
-        {
-            if(err)
-            {
-                done(new Error(err.message));
-            }
-        });
-
-
-        db_api.update_decklist_name(addValues[0], addValues[1], newDeckname, function (err, rows)
+        db_api.update_decklist_name(1, 'dc1', 'test2', function (err, rows)
         {
             if(err)
             {

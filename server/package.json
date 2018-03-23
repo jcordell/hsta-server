@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha ./tests/test_delete_deck.js",
+    "test": "mocha ./tests/test_update_decklist_name.js",
     "testuser": "mocha ./tests/test_create_user.js --exit"
   },
   "dependencies": {
