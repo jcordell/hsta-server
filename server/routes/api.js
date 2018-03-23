@@ -24,6 +24,7 @@ router.get('/get_user_decklists', function(req, res) {
         } else {
             // reformat deck info to an array
             var deck_info = [];
+            var deck_names = [];
             for (var i = 0; i < data.length; i++) {
                 // get decoded deckcode data
                 deckcode = data[i].deckcode;
@@ -37,8 +38,9 @@ router.get('/get_user_decklists', function(req, res) {
                 decoded_deckstring['deckname'] = data[i].deckname;
                 decoded_deckstring['deckcode'] = data[i].deckcode;
                 deck_info.push([decoded_deckstring]);
+                deck_names.push([data[i].deckname]);
             }
-            res.send(JSON.stringify({success : true, decks: deck_info}));
+            res.send(JSON.stringify({success : true, decks: deck_info, deck_names : deck_names}));
         }
     });
 });
