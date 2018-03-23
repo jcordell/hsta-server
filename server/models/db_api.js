@@ -20,7 +20,7 @@ exports.get_user_decklists = function(userId, done) {
 
 exports.add_deck = function(userid, deckcode, deckname, done) {
     var values = [userid, deckcode, deckname];
-    db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', [values], function(err, result) {
+    db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', values, function(err, result) {
         if (err) {
             console.log(err.message);
             return done(err);
