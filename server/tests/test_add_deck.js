@@ -14,7 +14,7 @@ db.connect(db.MODE_TEST, function(err) {
 describe('Add Deck Normal functionality', function() {
     it('Test add_deck expected input', function(done) {
         // remove entry from database to prevent duplicate key
-        db.get().query('DELETE FROM ownedBy WHERE userid = 3 AND deckcode = \'test_deckcode\'').then(
+        //db.get().query('DELETE FROM ownedBy WHERE userid = 3 AND deckcode = \'test_deckcode\'').then(
 
         // fails if primary key (userid, deckid) isn't unique, need a real test db
         db_api.add_deck(3, 'test_deckcode', 'test_deckname', function(err, insertId) {
@@ -40,7 +40,7 @@ describe('Add Deck Normal functionality', function() {
 
                 })
             }
-        }));
+        });
 
     })
 });
