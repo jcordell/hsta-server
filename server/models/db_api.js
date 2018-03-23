@@ -20,7 +20,7 @@ exports.get_user_decklists = function(userId, done) {
 
 exports.add_deck = function(userid, deckcode, deckname, done) {
     var values = [userid, deckcode, deckname];
-    db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', values, function(err, result) {
+    db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', [values], function(err, result) {
         if (err) {
             console.log(err.message);
             return done(err);
@@ -32,12 +32,12 @@ exports.add_deck = function(userid, deckcode, deckname, done) {
 exports.delete_deck = function(userid, deckcode, done){
 
     var values= [userid, deckcode];
-    db.get().query('DELETE FROM ownedBy WHERE userid = ? AND deckcode = ?', values, function(err, result){
+    db.get().query('DELETE FROM ownedBy WHERE userid = ? AND deckcode = ?', [userid, deckcode], function(err, result){
       if(err){
-          console.log(err.message);
           return done(err);
       }
-      done(null, result.deleteDeck);
+      console.log(result);
+      done(null, result);
     })
 };
 

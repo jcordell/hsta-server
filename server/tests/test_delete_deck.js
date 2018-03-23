@@ -11,7 +11,7 @@ var app = require('../app.js')('test');
 // start app on port 3000
 app.listen(3000);
 // Connect to test database
-db.connect(db.MODE_PRODUCTION, function(err) {
+db.connect(db.MODE_TEST, function(err) {
     if (err) {
         console.log('Unable to connect to MySQL.');
         process.exit(1)
@@ -27,7 +27,7 @@ function genId(num)
 
 function genDc(num)
 {
-    return 'dc'+num;
+    return 'dc'+1;
 }
 function genDn(num)
 {
@@ -41,57 +41,58 @@ function genDn(num)
 describe('Basic Delete Deck functionality', function()
 {
     it('Test delete_deck for single input', function(done)
+
     {
-
-        /*
-        //db.get().query('DELETE FROM ownedBy WHERE deckcode = ');
-        db.get().query('TRUNCATE TABLE ownedBy');
-
-        // add a single entry into the database to be deleted
-        var addValues= ['fakeemailtest', 'dc1', 'test1'];
-
-
-        // separate variables in order to print detailed error message
-        var userid= 8;
-        var deckcode= 'dc1';
-
-        //add a deck to the database to be deleted
+        test(0);
+        function test(index) {
+            if (index === 0) {
+                index = 1;
+                test(index);
+            }
+            else {
+                // add a single entry into the database to be deleted
+               // var addValues = ['fakeemailtest', 'dc1', 'test1'];
 
 
-       db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', addValues);
-       */
+                // separate variables in order to print detailed error message
+                var userid = 1;
+                var deckcode = 'dc1';
 
-
-                //run delete deck api on recently added deck
-               db_api.delete_deck(8, 'dc1', function(err, delStat)
-               {
-                   console.log(delStat)
-                   if (err)
-                   {
-                       done(new Error(err.message));
-                   }
-                    else
-                    {
-                            if(delStat.affectedRows===1)
-                            {
-                                done();
-                            }
-                            else
-                            {
-                                done(new Error('num rows affected: '+ delStat.affectedRows));
-                            }
+                /*/add a deck to the database to be deleted
+                db.get().query('INSERT INTO user (email) VALUES(?)', addValues[0], function (err) {
+                    if (err) {
+                        console.log(err.message);
+                        //done(new Error(err.message));
                     }
-               })
-        });
+                });
+
+
+                db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', addValues);
+                */
+
+                //run delete deck api on deck
+                db_api.delete_deck(11, 'dc1', function (err, delStat) {
+                    console.log(delStat)
+                    if (err) {
+                        done(new Error(err.message));
+                    }
+                    else {
+                        if (delStat.affectedRows === 1) {
+                            done();
+                        }
+                        else {
+                            done(new Error('num rows affected: ' + delStat.affectedRows));
+                        }
+                    }
+                })
+            }
+        }
+    });
 
 
 
     it('Test delete_deck for multiple input', function(done)
     {
-        //db.get().query('DELETE FROM ownedBy WHERE deckcode = \'*\'');
-
-        db.get().query('TRUNCATE TABLE ownedBy');
-
         var userid= [];
         var deckcode= [];
         var dn= [];
@@ -100,47 +101,31 @@ describe('Basic Delete Deck functionality', function()
         var sql;
 
         //set up 10 entries in table
-        for(i = 0; i < 10; i ++)
-        {
+        for(i = 0; i < 10; i ++) {
 
-            userid[i]= genId(i);
-            deckcode[i]= genDc(i);
-            dn[i]= genDn(i);
-
-            addValues=[userid[i], deckcode[i], dn[i]];
-
-            //sql = 'INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)';
-            db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', addValues, function(err, res)
-            {
-                if(err)
-               {
-                   done(new Error(err.message));
-               }
-            })
-
-
+            userid[i] = genId(i + 1);
+            deckcode[i] = genDc(i);
+            dn[i] = genDn(i);
+            addValues = [userid[i], deckcode[i], dn[i]];
         }
-        //set up loop to delete first 10 rows
-        db_api.delete_deck(userid[2], deckcode[2], function(err, dstat)
-        {
-            if(err)
-            {
-                done(new Error('Error when deleting row '));
-            }
-            else
-            {
-                if(dstat.affectedRows===1)
-                {
-                    done();
-                }
-                else
-                {
-                    done(new Error(JSON.stringify(dstat.text)));
-                   // done(new Error('Expected: 1' + '\nGot: dstat.rowsAffected'));
-                }
 
-            }
-        });
+            //set up loop to delete first 10 rows
+            db_api.delete_deck(userid[1], deckcode[1], function (err, dstat) {
+                if (err) {
+                    console.log(dstat);
+                    done(new Error('Error when deleting row '));
+                }
+                else {
+                    if (dstat.affectedRows === 1) {
+                        done();
+                    }
+                    else {
+                        done(new Error(dstat));
+                        // done(new Error('Expected: 1' + '\nGot: dstat.rowsAffected'));
+                    }
+
+                }
+            });
 
     })
 
