@@ -9,7 +9,7 @@ var db = require('../db.js');
 var app = require('../app.js')('test');
 
 // start app on port 3000
-app.listen(3000);
+//app.listen(3000);
 
 // Connect to test database
 db.connect(db.MODE_PRODUCTION, function(err) {

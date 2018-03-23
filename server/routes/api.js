@@ -25,10 +25,13 @@ router.get('/get_user_decklists', function(req, res) {
             // reformat deck info to an array
             var deck_info = [];
             var deck_names = [];
+            var decoded_deckstring = [];
+            var deckcodes = [];
             for (var i = 0; i < data.length; i++) {
                 // get decoded deckcode data
-                deckcode = data[i].deckcode;
-                decoded_deckstring = decode(deckcode);
+                deckcodes[i] = data[i].deckcode;
+
+                decoded_deckstring = decode(deckcodes[i]);
 
                 // if unable to decode or invalid deckstring
                 if (decoded_deckstring == null) {
@@ -69,12 +72,14 @@ router.get('/delete_deck', function(req, res) {
     var userid= req.query.userid;
     var deckcode= req.query.deckcode;
 
-    db_api.delete_deck(userid, deckcode, function(err, deleteDeck){
+    db_api.delete_deck(userid, deckcode, function(err, data){
         if(err){
             console.log(err.message);
             console.log('Delete deck failed');
         } else{
-            console.log(deleteDeck);
+            console.log(req.query.userid);
+            console.log(req.query.deckcode);
+            console.log(data);
         }
     });
     res.send('delete deck');

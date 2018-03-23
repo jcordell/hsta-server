@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "mocha ./tests/test_add_deck.js --exit ./tests/test_validate_decklist.js --exit"
+    "test": "mocha ./tests/test_masterfile.js --exit"
   },
   "dependencies": {
     "async": "^2.6.0",
@@ -16,6 +16,7 @@
     "deckstrings": "^2.0.0",
     "express": "^4.16.3",
     "jade": "~1.11.0",
+    "mocha": "^5.0.4",
     "morgan": "~1.9.0",
     "mysql": "^2.15.0",
     "object": "^0.1.1",

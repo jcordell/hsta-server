@@ -26,5 +26,9 @@
   {
     "class": "Paladin",
     "deckCode": "AAECAZ8FBMUDrwe5wQK36QIN2wOnBfIFpwixCNOqAtmuAtO8ArPBAp3CArHCAuPLAvjSAgA="
+  },
+  {
+    "class": "Test",
+    "deckCode": "dc1"
   }
 ]
