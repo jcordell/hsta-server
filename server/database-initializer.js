@@ -65,7 +65,9 @@ var cmds = [
         "userid INT NOT NULL, " +
         "deckcode VARCHAR(255) NOT NULL, " +
         "PRIMARY KEY (userid, deckcode), " +
-        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB"
+        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB",
+    "CREATE TABLE IF NOT EXISTS tournament (tournamentid INT NOT NULL AUTO_INCREMENT, name VARCHAR(255)," +
+        "numDecks INT unsigned, PRIMARY KEY (tournamentid)) ENGINE=InnoDB"
 ]
 
 
