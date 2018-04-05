@@ -41,7 +41,7 @@ router.get('/get_user_decklists', function(req, res) {
                 decoded_deckstring['deckname'] = data[i].deckname;
                 decoded_deckstring['deckcode'] = data[i].deckcode;
                 deck_info.push([decoded_deckstring]);
-                deck_names.push([data[i].deckname]);
+                deck_names.push(data[i].deckname);
             }
             res.send(JSON.stringify({success : true, decks: deck_info, deck_names : deck_names}));
         }
@@ -165,4 +165,40 @@ router.get('/create_user', function(req, res) {
         }
     });
 });
+
+/* create new tournament
+ * input: param: tournament name, number of decks
+ * return: { 'success' : true/false, 'error' : none/error_code }*/
+router.get('/create_tournament', function(req, res) {
+    var name = req.query.name;
+    var numDecks = req.query.numDecks;
+
+    db_api.create_tournament(name, numDecks, function(err, tournamentid) {
+
+        // likely tournament already created
+        if(err) {
+            console.log(err.message);
+            res.send(JSON.stringify({success : false, error: err.message}));
+        }
+        else {
+            res.send(JSON.stringify({success : true, id : tournamentid}));
+        }
+    });
+});
+
+
+/* input: params: userid, deckcode
+ * return: { 'success' : true/false, 'error' : none/error_code }*/
+router.get('/delete_tournament', function(req, res) {
+    var tournamentid= req.query.tournamentid;
+
+    db_api.delete_tournament(tournamentid, function(err, data){
+        if(err){
+            console.log(err.message);
+            res.send(JSON.stringify({success : false, error: err.message}));
+        }
+        res.send(JSON.stringify({success : true}));
+    });
+});
+
 module.exports = router;

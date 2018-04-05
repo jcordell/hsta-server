@@ -78,4 +78,25 @@ exports.login = function(email, done) {
             done(null, results[0].userid);
         }
     })
-}
+};
+
+exports.create_tournament = function(name, numDecks, done) {
+    var values = [name, numDecks];
+    db.get().query('INSERT INTO tournament (name, numDecks) VALUES(?,?)', values, function(err, result) {
+        if (err) {
+            console.log(err.message);
+            return done(err);
+        }
+        done(null, result.insertId)
+    })
+};
+
+exports.delete_tournament = function(tournamentid, done){
+    var values= [tournamentid];
+    db.get().query('DELETE FROM tournament WHERE tournamentid = ?', values, function(err, result){
+        if(err){
+            return done(err);
+        }
+        done(null, result);
+    })
+};
