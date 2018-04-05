@@ -24,7 +24,7 @@ describe('Get Decklists Normal functionality', function() {
     it('Test get decklists expected input', function(done) {
 
         // fails if primary key (userid, deckid) isn't unique, need a real test db
-        db_api.get_user_decklists(5, function(err, data) {
+        db_api.get_user_decklists(15, function(err, data) {
             if (err) {
                 console.log(err.message);
                 done(new Error('Unable to obtain decklist with expected input'));

@@ -1,7 +1,6 @@
 var supertest = require('supertest');
 var should = require('should');
 var server = supertest.agent("http://localhost:3000");
-
 var db_api = require('../models/db_api');
 var db = require('../db.js');
 
@@ -40,16 +39,7 @@ function genDn(num)
 
 describe('Basic Delete Deck functionality', function()
 {
-    it('Test delete_deck for single input', function(done)
-
-    {
-        test(0);
-        function test(index) {
-            if (index === 0) {
-                index = 1;
-                test(index);
-            }
-            else {
+    it('Test delete_deck for single input', function(done) {
                 // add a single entry into the database to be deleted
                // var addValues = ['fakeemailtest', 'dc1', 'test1'];
 
@@ -58,21 +48,8 @@ describe('Basic Delete Deck functionality', function()
                 var userid = 1;
                 var deckcode = 'dc1';
 
-                /*/add a deck to the database to be deleted
-                db.get().query('INSERT INTO user (email) VALUES(?)', addValues[0], function (err) {
-                    if (err) {
-                        console.log(err.message);
-                        //done(new Error(err.message));
-                    }
-                });
-
-
-                db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', addValues);
-                */
-
                 //run delete deck api on deck
                 db_api.delete_deck(11, 'dc1', function (err, delStat) {
-                    console.log(delStat)
                     if (err) {
                         done(new Error(err.message));
                     }
@@ -85,8 +62,6 @@ describe('Basic Delete Deck functionality', function()
                         }
                     }
                 })
-            }
-        }
     });
 
 

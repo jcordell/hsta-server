@@ -42,14 +42,15 @@ exports.delete_deck = function(userid, deckcode, done){
 };
 
 exports.update_decklist_name = function(userid, deckcode, deckname, done) {
-    var values = [deckcode, userid, deckcode];
+    var values = [deckname, userid, deckcode];
     db.get().query('UPDATE ownedBy ' +
         'SET deckname = ? ' +
-        'WHERE userid = ? AND deckcode = ?', values, function(err, result){
+        'WHERE userid = ? AND deckcode = ?', [deckname, userid, deckcode], function(err, result){
         if(err) {
             console.log(err.message);
             return done(err);
         }
+        console.log(result);
         done(null, result);
     })
 };
