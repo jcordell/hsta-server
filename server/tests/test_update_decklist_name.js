@@ -11,7 +11,7 @@ var app = require('../app.js')('test');
 // start app on port 3000
 //app.listen(3000);
 // Connect to test database
-db.connect(db.MODE_PRODUCTION, function(err) {
+db.connect(db.MODE_TEST, function(err) {
     if (err) {
         console.log('Unable to connect to MySQL.');
         process.exit(1)
@@ -26,7 +26,7 @@ describe('Test Basic Update Decklist Name functionality', function()
 {
     it('Test update_deckname for single row', function(done)
     {
-        db_api.update_decklist_name(1, 'dc1', 'test2', function (err, rows)
+        db_api.update_decklist_name(3, 'dc1', 'test2', function (err, rows)
         {
             if(err)
             {

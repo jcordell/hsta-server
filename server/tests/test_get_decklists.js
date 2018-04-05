@@ -40,7 +40,6 @@ describe('Get Decklists Normal functionality', function() {
                     deckcodes[i] = data[i].deckcode;
 
                     decoded_deckstring = decode(deckcodes[i]);
-                    console.log(decoded_deckstring);
                     // if unable to decode or invalid deckstring
                     if (decoded_deckstring == null) {
                         done(new Error('Deckstring is null'));

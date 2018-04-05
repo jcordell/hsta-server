@@ -87,7 +87,6 @@ describe('Basic Delete Deck functionality', function()
             //set up loop to delete first 10 rows
             db_api.delete_deck(userid[1], deckcode[1], function (err, dstat) {
                 if (err) {
-                    console.log(dstat);
                     done(new Error('Error when deleting row '));
                 }
                 else {

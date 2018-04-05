@@ -36,7 +36,6 @@ exports.delete_deck = function(userid, deckcode, done){
       if(err){
           return done(err);
       }
-      console.log(result);
       done(null, result);
     })
 };
@@ -50,7 +49,6 @@ exports.update_decklist_name = function(userid, deckcode, deckname, done) {
             console.log(err.message);
             return done(err);
         }
-        console.log(result);
         done(null, result);
     })
 };
