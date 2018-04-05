@@ -12,7 +12,7 @@ var app = require('../app.js')('test');
 //app.listen(3000);
 
 // Connect to test database
-db.connect(db.MODE_PRODUCTION, function(err) {
+db.connect(db.MODE_TEST, function(err) {
     if (err) {
         console.log('Unable to connect to MySQL.');
         process.exit(1)
@@ -48,14 +48,14 @@ describe('request(app)', function() {
     it('Deck is in submitted decklists with expected input test', function(done) {
 
         // insert values (if not existing)
-        var values = [2, 'test_deckcode', 'test_deckname'];
+        var values = [2, 'dc1', 'test1'];
         db.get().query('INSERT IGNORE INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', values, function(err, result) {
             if (err) {
                 done(new Error(err.message));
             }
 
             // test getting api with expecting no validate
-            server.get('/api/validate_decklist?userid=2&deckcode=test_deckcode')
+            server.get('/api/validate_decklist?userid=2&deckcode=dc1')
                 .expect(200)
                 .end ( function(err, res) {
                     if (err)
