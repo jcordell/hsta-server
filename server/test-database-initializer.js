@@ -63,16 +63,19 @@ var cmds = [
     "DROP TABLE IF EXISTS deck",
     "DROP TABLE IF EXISTS has",
     "DROP TABLE IF EXISTS user",
+    "DROP TABLE IF EXISTS tournament",
 
     "CREATE TABLE IF NOT EXISTS card (name VARCHAR(255), class VARCHAR(255), id VARCHAR(255), PRIMARY KEY (id)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS user (userid INT NOT NULL AUTO_INCREMENT, email VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (userid)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS ownedBy " +
-    "(deckname VARCHAR(255) NOT NULL, " +
-    "userid INT NOT NULL, " +
-    "deckcode VARCHAR(255) NOT NULL, " +
-    "PRIMARY KEY (userid, deckcode), " +
-    "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB"
+        "(deckname VARCHAR(255) NOT NULL, " +
+        "userid INT NOT NULL, " +
+        "deckcode VARCHAR(255) NOT NULL, " +
+        "PRIMARY KEY (userid, deckcode), " +
+        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB",
+    "CREATE TABLE IF NOT EXISTS tournament (tournamentid INT NOT NULL AUTO_INCREMENT, name VARCHAR(255)," +
+        "numDecks INT unsigned, PRIMARY KEY (tournamentid)) ENGINE=InnoDB"
 ]
 
 

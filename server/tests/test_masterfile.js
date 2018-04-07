@@ -16,4 +16,6 @@ require('../tests/test_delete_deck.js');
 require('../tests/test_get_decklists.js');
 require('../tests/test_update_decklist_name.js');
 require('../tests/test_validate_decklist.js');
+require('../tests/test_create_tournament');
+require('../tests/test_delete_tournament');
 
