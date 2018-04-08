@@ -58,6 +58,7 @@ function createDB() {
 }
 
 var cmds = [
+    "DROP TABLE IF EXISTS playsInTournament",
     "DROP TABLE IF EXISTS ownedBy",
     "DROP TABLE IF EXISTS card",
     "DROP TABLE IF EXISTS deck",
@@ -75,7 +76,11 @@ var cmds = [
         "PRIMARY KEY (userid, deckcode), " +
         "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB",
     "CREATE TABLE IF NOT EXISTS tournament (tournamentid INT NOT NULL AUTO_INCREMENT, name VARCHAR(255)," +
-        "numDecks INT unsigned, PRIMARY KEY (tournamentid)) ENGINE=InnoDB"
+        "numDecks INT unsigned, PRIMARY KEY (tournamentid)) ENGINE=InnoDB",
+    "CREATE TABLE IF NOT EXISTS playsInTournament (tournamentid INT NOT NULL, userid INT NOT NULL," +
+        "PRIMARY KEY (tournamentid, userid)," +
+        "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid)," +
+        "FOREIGN KEY (userid) REFERENCES user (userid)) ENGINE = InnoDB"
 ]
 
 
