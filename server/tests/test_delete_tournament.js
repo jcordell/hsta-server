@@ -8,9 +8,6 @@ var db = require('../db.js');
 // connect to app (hearthstone server)
 var app = require('../app.js')('test');
 
-// start app on port 3000
-//app.listen(3000);
-
 // Connect to test database
 db.connect(db.MODE_TEST, function(err) {
     if (err) {
@@ -29,7 +26,6 @@ describe('request(app)', function() {
             if (err) done(new Error(err.message));
 
             // test create tournament with expected input
-            console.log(result);
             server.get('/api/delete_tournament?tournamentid=' + result.insertId)
                 .expect(200)
                 .end(function (err, res) {
