@@ -196,9 +196,24 @@ router.get('/delete_tournament', function(req, res) {
         if(err){
             console.log(err.message);
             res.send(JSON.stringify({success : false, error: err.message}));
+        } else {
+            res.send(JSON.stringify({success: true}));
         }
-        res.send(JSON.stringify({success : true}));
     });
+});
+
+router.get('/join_tournament', function(req, res) {
+    var userid = req.query.userid;
+    var tournamentid = req.query.tournamentid;
+
+    db_api.join_tournament(userid, tournamentid, function(err, numDecks) {
+        if(err) {
+            console.log(err.message);
+            res.send(JSON.stringify({ success : false, err : err.message }))
+        } else {
+            res.send(JSON.stringify({success: true, numDecks: numDecks}));
+        }
+    })
 });
 
 module.exports = router;

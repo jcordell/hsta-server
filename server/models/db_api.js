@@ -99,3 +99,28 @@ exports.delete_tournament = function(tournamentid, done){
         done(null, result);
     })
 };
+
+var get_num_tournament_decks = function(tournamentid, done) {
+    db.get().query('SELECT numDecks FROM tournament WHERE tournamentid = ?', tournamentid, function(err, numDecks) {
+        if (err) {
+            console.log(err.message);
+            return done(err);
+        }
+        return done(null, numDecks);
+    })
+}
+
+exports.join_tournament = function(userid, tournamentid, done) {
+    var values = [userid, tournamentid];
+    db.get().query('INSERT INTO playsInTournament (userid, tournamentid) VALUES (?,?)', values, function(err, result) {
+        if (err) {
+            console.log(err.message);
+            return done(err);
+        }
+
+        // find how many decks are allowed in tournament
+        numDecks = get_num_tournament_decks(tournamentid, function(err, numDecks) {
+            done(null, numDecks[0].numDecks);
+        });
+    })
+};
