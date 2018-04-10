@@ -71,9 +71,11 @@ var cmds = [
     "CREATE TABLE IF NOT EXISTS playsInTournament (tournamentid INT NOT NULL, userid INT NOT NULL," +
         "PRIMARY KEY (tournamentid, userid)," +
         "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE," +
-        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB"
-]
+        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE=InnoDB",
+    "CREATE TABLE IF NOT EXISTS matches " +
+        "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, isValid INT, PRIMARY KEY (matchid)) ENGINE=InnoDB"
 
+]
 
 con.connect(function(err) {
     if (err) throw err;

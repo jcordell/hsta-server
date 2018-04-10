@@ -277,4 +277,46 @@ router.get('/join_tournament', function(req, res) {
     })
 });
 
+/*return: { 'success' : true/false, 'error' : none/error_code }*/
+router.get('/create_tournament', function(req, res) {
+    var name = req.query.name;
+    var numDecks = req.query.numDecks;
+
+    db_api.create_tournament(name, numDecks, function(err, tournamentid) {
+
+        // likely tournament already created
+        if(err) {
+            console.log(err.message);
+            res.send(JSON.stringify({success : false, error: err.message}));
+        }
+        else {
+            res.send(JSON.stringify({success : true, id : tournamentid}));
+        }
+    });
+});
+router.get('/create_match', function(req, res)
+{
+    var homeTeamId = req.query.homeTeamId;
+    var awayTeamId= req.query.awayTeamId;
+    var winningTeamId= req.query.winningTeamId;
+    var isValid= req.query.isValid;
+
+    db_api.create_match(homeTeamId, awayTeamId, winningTeamId, isValid, function(err, matchid)
+    {
+        if(err)
+        {
+            console.log(matchid);
+            console.log(err.message);
+            res.send(JSON.stringify({success : false, error: err.message}));
+        }
+        else
+        {
+            console.log(matchid);
+            res.send(JSON.stringify({success : true, id : matchid}));
+        }
+    });
+
+});
+
+
 module.exports = router;

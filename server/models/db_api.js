@@ -128,3 +128,49 @@ exports.join_tournament = function(userid, tournamentid, done) {
         });
     })
 };
+
+exports.create_match= function(homeTeamId, awayTeamId, winningTeamId, isValid, done)
+{
+    var values= [homeTeamId, awayTeamId, winningTeamId, isValid];
+
+    db.get().query('INSERT INTO matches (homeTeamId, awayTeamId, winningTeamId, isValid) VALUES (?,?,?,?)', values, function(err, result)
+    {
+        if(err)
+        {
+            return done(err);
+        }
+
+        done(null, result.insertId)
+    })
+};
+
+/*
+exports.delete_match = function(matchid, done)
+{
+    db.get().query('DELETE FROM match WHERE matchid = ?', matchid, function(err, result)
+    {
+        if(err)
+        {
+            console.log(err.message);
+            return done(err);
+        }
+        done(null, result);
+    })
+};
+*/
+/*
+exports.get_match= function(matchid, done)
+{
+    //TODO: figure out what needs to be returned, add isValid to 'where' clause?
+    db.get.query('SELECT * FROM match WHERE matchid = ?', matchid, function(err, result)
+    {
+      if(err)
+      {
+          console.log(err.message);
+          return done(err);
+      }
+      done(null, result);
+    })
+
+};
+*/
