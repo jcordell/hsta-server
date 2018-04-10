@@ -22,52 +22,60 @@ db.connect(db.MODE_TEST, function(err) {
 });
 
 describe('request(app)', function() {
-    it('Deck is not in submitted decklists with expected input test', function(done) {
 
-        // remove decklist (if exists)
-        db.get().query('DELETE FROM ownedBy WHERE userid = 1 AND deckcode = \'test_deckcode\'', function(err, result) {
-            if(err) done(new Error(err.message));
-
-            // test getting api with expecting no validate
-            server.get('/api/validate_decklist?userid=1&deckcode=test_deckcode')
-                .expect(200)
-                .end ( function(err, res) {
-                    if (err)
-                        done(new Error(err.message));
-
-                    res.status.should.equal(200);
-
-                    // response should equal json string, weird commat formatting
-                    res.text.should.equal('\{\"hasDeck\":false,\"error\":null\}');
-                    done();
-                })
-        });
-    })
-
-
-    it('Deck is in submitted decklists with expected input test', function(done) {
-
-        // insert values (if not existing)
-        var values = [2, 'dc1', 'test1'];
-        db.get().query('INSERT IGNORE INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', values, function(err, result) {
-            if (err) {
-                done(new Error(err.message));
-            }
-
-            // test getting api with expecting no validate
-            server.get('/api/validate_decklist?userid=2&deckcode=dc1')
-                .expect(200)
-                .end ( function(err, res) {
-                    if (err)
-                        done(new Error(err.message));
-
-                    res.status.should.equal(200);
-
-                    // response should equal json string, weird commat formatting
-                    console.log(res.text);
-                    res.text.should.equal('\{\"hasDeck\":true\}');
-                    done();
-                })
+    before(function() {
+        db_api.get_user_decklists(13, function (err, rows) {
+            console.log(';lkasjdf;lkajsd;flkjasdkfj')
+            console.log(rows);
         })
     })
+
+    it('Deck played is in submitted decklists with expected input test', function(done) {
+
+        server.post('/api/validate_decklist')
+            .expect(200)
+            .send({
+                "userid": 13,
+                "deckjson" : {
+                    "1": 1,
+                    "2" : 1
+                }
+            })
+            .end ( function(err, res) {
+                if (err)
+                    done(new Error(err.message));
+
+                console.log(res.text);
+                res.status.should.equal(200);
+
+                // response should equal json string, weird commat formatting
+                res.text.should.equal('\{\"success\":true,\"fair_match\":true\}');
+                done();
+            })
+    })
+
+    it('Deck played is not in submitted decklists with expected input test', function(done) {
+
+        server.post('/api/validate_decklist')
+            .expect(200)
+            .send({
+                "userid": 13,
+                "deckjson" : {
+                    "1": 1,
+                    "2" : 1000
+                }
+            })
+            .end ( function(err, res) {
+                if (err)
+                    done(new Error(err.message));
+
+                console.log(res.text);
+                res.status.should.equal(200);
+
+                // response should equal json string, weird commat formatting
+                res.text.should.equal('\{\"success\":true,\"fair_match\":false\}');
+                done();
+            })
+    })
+
 });

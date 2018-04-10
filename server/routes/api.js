@@ -4,6 +4,8 @@ var app= require('../app');
 var db_api = require('../models/db_api');
 var deckstrings = require('deckstrings');
 
+var Promise = require('es6-promise');
+
 decode = function(deckcode) {
     try {
         return deckstrings.decode(deckcode);
@@ -85,32 +87,91 @@ router.get('/delete_deck', function(req, res) {
     res.send('delete deck');
 });
 
-/* Checks if user has submitted a deckcode, returns boolean
- * input: params: userid, deckcode
- * return: { 'hasDeck' : true/false, 'error' : none/error_code }*/
-router.get('/validate_decklist', function(req, res) {
-  var deckcode = req.query.deckcode;
-  var userid = req.query.userid;
+/*
+    converts a card list to a json for easier comparisons
+ */
+var convert_card_list_to_json = function (cardlist, done) {
+    var card_json = {};
 
-  // get user saved decklists from db
-  db_api.validate_decklist(userid, deckcode, function(err, response) {
-      // error retrieving from db
-      if(err) {
-          console.log("unable to validate decklist");
-      } else {
-          /*
-            response is list of deckcodes from user
-            if a result, the user has a submitted deck with same deckcode, return true
-           */
-          if(response.length == 1) {
-              res.send(JSON.stringify({hasDeck : true}));
-          }
-          else {
-              res.send(JSON.stringify({hasDeck : false, error : null}));
-          }
-      }
-  })
+    for (var i = 0; i < cardlist.length; i ++) {
+        card_json[cardlist[i][0]] = cardlist[i][1];
+    }
+    done(card_json);
+};
+
+
+/*
+    compares two same deckjsons and sees if played_deckjson is a derivative of saved_deckjson
+ */
+var compare_played_deckjson_to_saved_deckstring = function(saved_deckjson, played_deckjson) {
+
+    // iterate over every played card id
+    for (var cardid in played_deckjson) {
+        // played card should be in saveddeck have been played <= to num in saveddeck
+        if (cardid in saved_deckjson && saved_deckjson[cardid] >= played_deckjson[cardid]) {
+        } else {
+            return false;
+        }
+    }
+    return true;
+};
+
+/*
+    checks if played deck is in user submitted deck
+    will need to update to check if in tournament
+    expected post method with json in body, formatted like:
+
+     {
+        "userid": 1,
+        "deckjson" : {
+            "1": 1,
+            "2" : 5
+     }
+ }
+ */
+router.post('/validate_decklist', function(request, res) {
+    // post request, get info from body
+    var played_deckjson = request.body;
+
+    // get users saved decklists
+    db_api.get_user_decklists(played_deckjson['userid'], function (err, deck_strings) {
+        if (err) {
+            res.send(err.message);
+        }
+
+        // assumes match is fair until mismatch is found
+        var fair_match = true;
+
+        // don't want to return true if no decklist is found, so keep track of that
+        var deck_match = false;
+
+        // iterate over decklists returned from get_user_decklists
+        var promises = deck_strings.map(function (item) {
+            var saved_deckcode = decode(item.deckcode);
+
+            // if deckcode converted properly played cards not in a saved deckstring
+            if (saved_deckcode != null) {
+                deck_match = true;
+
+                // convert decklist to json
+                convert_card_list_to_json(saved_deckcode['cards'], function(saved_deckjson) {
+
+                    // compare for fairness
+                    if (!compare_played_deckjson_to_saved_deckstring(saved_deckjson, played_deckjson['deckjson'])) {
+                        fair_match = false;
+                    }
+                });
+            }
+        });
+
+        // wait for checking to complete
+        Promise.all(promises).then(function() {
+            fair_match = fair_match && deck_match;
+            res.send(JSON.stringify({ success : true, fair_match : fair_match}))
+        })
+    });
 });
+
 
 /* GET users listing.
  * input: params: userid, deckname, deckcode
