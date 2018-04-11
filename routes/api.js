@@ -4,6 +4,8 @@ var app= require('../app');
 var db_api = require('../models/db_api');
 var deckstrings = require('deckstrings');
 
+var Promise = require('es6-promise');
+
 decode = function(deckcode) {
     try {
         return deckstrings.decode(deckcode);
@@ -85,32 +87,91 @@ router.get('/delete_deck', function(req, res) {
     res.send('delete deck');
 });
 
-/* Checks if user has submitted a deckcode, returns boolean
- * input: params: userid, deckcode
- * return: { 'hasDeck' : true/false, 'error' : none/error_code }*/
-router.get('/validate_decklist', function(req, res) {
-  var deckcode = req.query.deckcode;
-  var userid = req.query.userid;
+/*
+    converts a card list to a json for easier comparisons
+ */
+var convert_card_list_to_json = function (cardlist, done) {
+    var card_json = {};
 
-  // get user saved decklists from db
-  db_api.validate_decklist(userid, deckcode, function(err, response) {
-      // error retrieving from db
-      if(err) {
-          console.log("unable to validate decklist");
-      } else {
-          /*
-            response is list of deckcodes from user
-            if a result, the user has a submitted deck with same deckcode, return true
-           */
-          if(response.length == 1) {
-              res.send(JSON.stringify({hasDeck : true}));
-          }
-          else {
-              res.send(JSON.stringify({hasDeck : false, error : null}));
-          }
-      }
-  })
+    for (var i = 0; i < cardlist.length; i ++) {
+        card_json[cardlist[i][0]] = cardlist[i][1];
+    }
+    done(card_json);
+};
+
+
+/*
+    compares two same deckjsons and sees if played_deckjson is a derivative of saved_deckjson
+ */
+var compare_played_deckjson_to_saved_deckstring = function(saved_deckjson, played_deckjson) {
+
+    // iterate over every played card id
+    for (var cardid in played_deckjson) {
+        // played card should be in saveddeck have been played <= to num in saveddeck
+        if (cardid in saved_deckjson && saved_deckjson[cardid] >= played_deckjson[cardid]) {
+        } else {
+            return false;
+        }
+    }
+    return true;
+};
+
+/*
+    checks if played deck is in user submitted deck
+    will need to update to check if in tournament
+    expected post method with json in body, formatted like:
+
+     {
+        "userid": 1,
+        "deckjson" : {
+            "1": 1,
+            "2" : 5
+     }
+ }
+ */
+router.post('/validate_decklist', function(request, res) {
+    // post request, get info from body
+    var played_deckjson = request.body;
+
+    // get users saved decklists
+    db_api.get_user_decklists(played_deckjson['userid'], function (err, deck_strings) {
+        if (err) {
+            res.send(err.message);
+        }
+
+        // assumes match is fair until mismatch is found
+        var fair_match = true;
+
+        // don't want to return true if no decklist is found, so keep track of that
+        var deck_match = false;
+
+        // iterate over decklists returned from get_user_decklists
+        var promises = deck_strings.map(function (item) {
+            var saved_deckcode = decode(item.deckcode);
+
+            // if deckcode converted properly played cards not in a saved deckstring
+            if (saved_deckcode != null) {
+                deck_match = true;
+
+                // convert decklist to json
+                convert_card_list_to_json(saved_deckcode['cards'], function(saved_deckjson) {
+
+                    // compare for fairness
+                    if (!compare_played_deckjson_to_saved_deckstring(saved_deckjson, played_deckjson['deckjson'])) {
+                        fair_match = false;
+                    }
+                });
+            }
+        });
+
+        // wait for checking to complete
+        Promise.all(promises).then(function() {
+            fair_match = fair_match && deck_match;
+            res.send(JSON.stringify({ success : true, fair_match : fair_match}))
+        })
+    });
 });
+
 
 /* GET users listing.
  * input: params: userid, deckname, deckcode
@@ -196,9 +257,105 @@ router.get('/delete_tournament', function(req, res) {
         if(err){
             console.log(err.message);
             res.send(JSON.stringify({success : false, error: err.message}));
+        } else {
+            res.send(JSON.stringify({success: true}));
         }
-        res.send(JSON.stringify({success : true}));
     });
+});
+
+router.get('/join_tournament', function(req, res) {
+    var userid = req.query.userid;
+    var tournamentid = req.query.tournamentid;
+
+    db_api.join_tournament(userid, tournamentid, function(err, numDecks) {
+        if(err) {
+            console.log(err.message);
+            res.send(JSON.stringify({ success : false, err : err.message }))
+        } else {
+            res.send(JSON.stringify({success: true, numDecks: numDecks}));
+        }
+    })
+});
+
+/*return: { 'success' : true/false, 'error' : none/error_code }*/
+router.get('/create_tournament', function(req, res) {
+    var name = req.query.name;
+    var numDecks = req.query.numDecks;
+
+    db_api.create_tournament(name, numDecks, function(err, tournamentid) {
+
+        // likely tournament already created
+        if(err) {
+            console.log(err.message);
+            res.send(JSON.stringify({success : false, error: err.message}));
+        }
+        else {
+            res.send(JSON.stringify({success : true, id : tournamentid}));
+        }
+    });
+});
+
+router.get('/create_match', function(req, res)
+{
+    var homeTeamId = req.query.homeTeamId;
+    var awayTeamId= req.query.awayTeamId;
+    var winningTeamId= req.query.winningTeamId;
+    var isValid= req.query.isValid;
+
+    db_api.create_match(homeTeamId, awayTeamId, winningTeamId, isValid, function(err, matchid)
+    {
+        if(err)
+        {
+            console.log(matchid);
+            console.log(err.message);
+            res.send(JSON.stringify({success : false, error: err.message}));
+        }
+        else
+        {
+            console.log(matchid);
+            res.send(JSON.stringify({success : true, id : matchid}));
+        }
+    });
+
+});
+
+router.get('/delete_match', function (req, res)
+{
+   var matchid = req.query.matchid;
+
+   db_api.delete_match(matchid, function(err, status)
+   {
+       if(err)
+       {
+           console.log(JSON.stringify(status));
+           res.send(JSON.stringify({success: false, error: err.message}));
+       }
+       else
+       {
+           console.log(JSON.stringify(status));
+           res.send(JSON.stringify({success: true}));
+       }
+   })
+
+});
+
+router.get('/get_match', function(req, res)
+{
+    var matchid = req.query.matchid;
+
+    db_api.get_match(matchid, function(err, status)
+    {
+        if(err)
+        {
+            console.log(JSON.stringify(status));
+            res.send(JSON.stringify({success: false, error: err.message}));
+        }
+        else
+        {
+            console.log(JSON.stringify(status));
+            res.send(JSON.stringify({success: true}));
+        }
+    })
 });
 
 module.exports = router;

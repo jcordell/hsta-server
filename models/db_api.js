@@ -13,7 +13,11 @@ exports.create_user = function(email, done) {
 
 exports.get_user_decklists = function(userId, done) {
     db.get().query("SELECT deckname, deckcode FROM ownedBy WHERE userid = ?", [userId], function (err, rows) {
-        if (err) return done(err);
+        if (err) {
+            console.log('error in query');
+            console.log(err.message);
+            return done(err);
+        }
         done(null, rows)
     })
 };
@@ -99,3 +103,74 @@ exports.delete_tournament = function(tournamentid, done){
         done(null, result);
     })
 };
+
+var get_num_tournament_decks = function(tournamentid, done) {
+    db.get().query('SELECT numDecks FROM tournament WHERE tournamentid = ?', tournamentid, function(err, numDecks) {
+        if (err) {
+            console.log(err.message);
+            return done(err);
+        }
+        return done(null, numDecks);
+    })
+}
+
+exports.join_tournament = function(userid, tournamentid, done) {
+    var values = [userid, tournamentid];
+    db.get().query('INSERT INTO playsInTournament (userid, tournamentid) VALUES (?,?)', values, function(err, result) {
+        if (err) {
+            console.log(err.message);
+            return done(err);
+        }
+
+        // find how many decks are allowed in tournament
+        numDecks = get_num_tournament_decks(tournamentid, function(err, numDecks) {
+            done(null, numDecks[0].numDecks);
+        });
+    })
+};
+
+exports.create_match= function(homeTeamId, awayTeamId, winningTeamId, isValid, done)
+{
+    var values= [homeTeamId, awayTeamId, winningTeamId, isValid];
+
+    db.get().query('INSERT INTO matches (homeTeamId, awayTeamId, winningTeamId, isValid) VALUES (?,?,?,?)', values, function(err, result)
+    {
+        if(err)
+        {
+            return done(err);
+        }
+
+        done(null, result.insertId)
+    })
+};
+
+
+exports.delete_match = function(matchid, done)
+{
+    db.get().query('DELETE FROM matches WHERE matchid = ?', matchid, function(err, result)
+    {
+        if(err)
+        {
+            console.log(err.message);
+            return done(err);
+        }
+        done(null, result);
+    })
+};
+
+
+exports.get_match= function(matchid, done)
+{
+    //TODO: figure out what needs to be returned, add isValid to 'where' clause?
+    db.get().query('SELECT * FROM matches WHERE matchid = ?', matchid, function(err, result)
+    {
+      if(err)
+      {
+          console.log(err.message);
+          return done(err);
+      }
+      done(null, result);
+    })
+
+};
+

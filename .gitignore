@@ -1,4 +1,4 @@
-server/node_modules
+node_modules
 .idea
-server/testparse.js
-server/package-lock.json
+testparse.js
+package-lock.json
