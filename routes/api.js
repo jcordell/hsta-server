@@ -192,16 +192,16 @@ router.get('/update_decklist_name', function(req, res) {
 
 /*
 Stub for logging in a user
-Takes in an email and returns userid
-If email not in database, returns info about that
+Takes in an battletag and returns userid
+If battletag not in database, returns info about that
  */
 router.get('/login', function(req, res) {
-   var email = req.query.email;
-   db_api.login(email, function(err, userid) {
+   var battletag = req.query.battletag;
+   db_api.login(battletag, function(err, userid) {
 
        // user not created
        if(userid == null) {
-            res.send(JSON.stringify({success : false, message : 'Email not yet registered'}));
+            res.send(JSON.stringify({success : false, message : 'battletag not yet registered'}));
         } else {
             res.send(JSON.stringify({success : true, id : userid}));
         }
@@ -209,11 +209,11 @@ router.get('/login', function(req, res) {
 });
 
 /* create new user
- * input: param: email
+ * input: param: battletag
   * return: { 'success' : true/false, 'error' : none/error_code }*/
 router.get('/create_user', function(req, res) {
-    var email = req.query.email;
-    db_api.create_user(email, function(err, userid) {
+    var battletag = req.query.battletag;
+    db_api.create_user(battletag, function(err, userid) {
 
         // likely user already registered
         if(err) {
