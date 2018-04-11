@@ -1,12 +1,12 @@
 var mysql = require('mysql');
 var parse = require('csv-parse');
 var fs = require('fs');
-var cardJSON = 'card-data.json';
-var deckJSON = 'deck-data.json';
+var cardJSON = 'json_data/card-data.json';
 var isCreated=0;
+var index = 0;
 
 
-//holds json data
+//holds json_data
 var cardOutput = [];
 var cardID = [];
 var cardName = [];
@@ -97,32 +97,43 @@ con.connect(function(err) {
         });
     }
    console.log("Tables initialized");
-
+    populate(index);
     //bulkloading JSON files into DB
-    fs.readFile(cardJSON, 'utf8', function(err, data) {
-        if (err) throw err;
+    function populate(index) {
+        if (index === 0) {
+            fs.readFile(cardJSON, 'utf8', function (err, data) {
+                if (err) throw err;
 
-        //JSON parse command
-        data = JSON.parse(data);
-        for(i = 0; i < data.length; i++) {
+                //JSON parse command
+                data = JSON.parse(data);
+                for (i = 0; i < data.length; i++) {
 
-            //pull info from JSON file
-            cardID[i] = (data[i].dbfId);
-            cardName[i] = (data[i].name);
-            cardClass[i] = (data[i].cardClass);
+                    //pull info from JSON file
+                    cardID[i] = (data[i].dbfId);
+                    cardName[i] = (data[i].name);
+                    cardClass[i] = (data[i].cardClass);
 
 
-            //put data into one array to easily import into DB
-            cardOutput.push([cardName[i],cardClass[i],cardID[i]]);
+                    //put data into one array to easily import into DB
+                    cardOutput.push([cardName[i], cardClass[i], cardID[i]]);
+
+                }
+                //inserts card data into DB
+                con.query("INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function (err) {
+                    if (err) throw err;
+                });
+                console.log("Card table populated");
+                if (index === 0)
+                    populate(index+1);
+            });
 
         }
-        //inserts card data into DB
-        con.query("INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function(err) {
-            if (err) throw err;
-        });
-
-    });
-    console.log("Card table initialized");
+        if (index === 1) {
+            console.log("hsdb initializer finished");
+            con.end();
+            return;
+        }
+    }
 
 });
 
