@@ -339,4 +339,23 @@ router.get('/delete_match', function (req, res)
 
 });
 
+router.get('/get_match', function(req, res)
+{
+    var matchid = req.query.matchid;
+
+    db_api.get_match(matchid, function(err, status)
+    {
+        if(err)
+        {
+            console.log(JSON.stringify(status));
+            res.send(JSON.stringify({success: false, error: err.message}));
+        }
+        else
+        {
+            console.log(JSON.stringify(status));
+            res.send(JSON.stringify({success: true}));
+        }
+    })
+});
+
 module.exports = router;

@@ -158,11 +158,11 @@ exports.delete_match = function(matchid, done)
     })
 };
 
-/*
+
 exports.get_match= function(matchid, done)
 {
     //TODO: figure out what needs to be returned, add isValid to 'where' clause?
-    db.get.query('SELECT * FROM match WHERE matchid = ?', matchid, function(err, result)
+    db.get().query('SELECT * FROM matches WHERE matchid = ?', matchid, function(err, result)
     {
       if(err)
       {
@@ -173,4 +173,4 @@ exports.get_match= function(matchid, done)
     })
 
 };
-*/
+
