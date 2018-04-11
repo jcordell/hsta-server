@@ -294,6 +294,7 @@ router.get('/create_tournament', function(req, res) {
         }
     });
 });
+
 router.get('/create_match', function(req, res)
 {
     var homeTeamId = req.query.homeTeamId;
@@ -318,5 +319,24 @@ router.get('/create_match', function(req, res)
 
 });
 
+router.get('/delete_match', function (req, res)
+{
+   var matchid = req.query.matchid;
+
+   db_api.delete_match(matchid, function(err, status)
+   {
+       if(err)
+       {
+           console.log(JSON.stringify(status));
+           res.send(JSON.stringify({success: false, error: err.message}));
+       }
+       else
+       {
+           console.log(JSON.stringify(status));
+           res.send(JSON.stringify({success: true}));
+       }
+   })
+
+});
 
 module.exports = router;

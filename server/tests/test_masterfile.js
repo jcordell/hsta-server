@@ -20,4 +20,5 @@ require('../tests/test_create_tournament');
 require('../tests/test_delete_tournament');
 require('../tests/test_join_tournament');
 require('../tests/test_create_match');
+require('../tests/test_delete_match');
 

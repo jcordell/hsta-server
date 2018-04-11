@@ -144,10 +144,10 @@ exports.create_match= function(homeTeamId, awayTeamId, winningTeamId, isValid, d
     })
 };
 
-/*
+
 exports.delete_match = function(matchid, done)
 {
-    db.get().query('DELETE FROM match WHERE matchid = ?', matchid, function(err, result)
+    db.get().query('DELETE FROM matches WHERE matchid = ?', matchid, function(err, result)
     {
         if(err)
         {
@@ -157,7 +157,7 @@ exports.delete_match = function(matchid, done)
         done(null, result);
     })
 };
-*/
+
 /*
 exports.get_match= function(matchid, done)
 {
