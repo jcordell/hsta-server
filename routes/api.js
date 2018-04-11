@@ -78,13 +78,14 @@ router.get('/delete_deck', function(req, res) {
         if(err){
             console.log(err.message);
             console.log('Delete deck failed');
+            res.send(JSON.stringify({ success: false, error: err.message }))
         } else{
             console.log(req.query.userid);
             console.log(req.query.deckcode);
             console.log(data);
+            res.send(JSON.stringify({ success: true }));
         }
     });
-    res.send('delete deck');
 });
 
 /*
