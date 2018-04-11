@@ -1,8 +1,8 @@
 var db = require('../db.js');
 
-exports.create_user = function(email, done) {
-  var values = [email];
-  db.get().query('INSERT INTO user (email) VALUES(?)', values, function(err, result) {
+exports.create_user = function(battletag, done) {
+  var values = [battletag];
+  db.get().query('INSERT INTO user (battletag) VALUES(?)', values, function(err, result) {
       if (err) {
           console.log(err.message);
           return done(err);
@@ -69,9 +69,9 @@ exports.validate_decklist = function(userid, deckcode, done) {
     })
 };
 
-exports.login = function(email, done) {
-    var values = [email];
-    db.get().query('SELECT userid FROM user WHERE email = ?', values, function(err, results) {
+exports.login = function(battletag, done) {
+    var values = [battletag];
+    db.get().query('SELECT userid FROM user WHERE battletag = ?', values, function(err, results) {
         if(err) {
             console.log(err.message);
             return done(error);

@@ -14,18 +14,18 @@ db.connect(db.MODE_TEST, function(err) {
 describe('Create User Normal functionality', function() {
     it('Test create_user expected input', function(done) {
         // remove entry from database to prevent duplicate key
-        db.get().query('DELETE FROM user WHERE email = \'fakeemail1@gmail.com\'');
+        db.get().query('DELETE FROM user WHERE battletag = \'fakebattletag1@gmail.com\'');
 
         // fails if primary key (userid, deckid) isn't unique, need a real test db
-        db_api.create_user('fakeemail@gmail.com', function(err, insertId) {
+        db_api.create_user('fakebattletag@gmail.com', function(err, insertId) {
             if (err) {
                 console.log(err.message);
                 done(new Error('Unable to create user with expected input'));
             }
             else {
                 // make sure user got added
-                db.get().query('SELECT email FROM user ' +
-                    'WHERE email = \'fakeemail@gmail.com\'', function(err, result) {
+                db.get().query('SELECT battletag FROM user ' +
+                    'WHERE battletag = \'fakebattletag@gmail.com\'', function(err, result) {
                     if (err) {
                         console.log(err.message);
                         return done(new Error('Unable to read from database'));

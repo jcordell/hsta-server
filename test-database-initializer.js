@@ -69,7 +69,7 @@ var cmds = [
 
     "CREATE TABLE IF NOT EXISTS card (name VARCHAR(255), class VARCHAR(255), id VARCHAR(255), PRIMARY KEY (id)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
-    "CREATE TABLE IF NOT EXISTS user (userid INT NOT NULL AUTO_INCREMENT, email VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (userid)) ENGINE=InnoDB",
+    "CREATE TABLE IF NOT EXISTS user (userid INT NOT NULL AUTO_INCREMENT, battletag VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (userid)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS ownedBy " +
         "(deckname VARCHAR(255) NOT NULL, " +
         "userid INT NOT NULL, " +
@@ -147,15 +147,15 @@ con.connect(function(err) {
         fs.readFile(userJSON, 'utf8', function (err, data) {
             if (err) throw err;
             var userOutput = [];
-            var userEmail = [];
+            var userbattletag = [];
 
             data = JSON.parse(data);
             for (i = 0; i < data.length; i++) {
-                userEmail[i] = (data[i].email);
+                userbattletag[i] = (data[i].battletag);
 
-                userOutput.push([userEmail[i]]);
+                userOutput.push([userbattletag[i]]);
             }
-            con.query("INSERT INTO user (email) VALUES ?", [userOutput], function (err) {
+            con.query("INSERT INTO user (battletag) VALUES ?", [userOutput], function (err) {
                 if (err) throw err;
             });
             console.log("User table initialized");
