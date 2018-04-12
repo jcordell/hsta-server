@@ -22,7 +22,7 @@ describe('Test delete_match functionality', function() {
     it('Delete single match', function (done) {
 
         //insert single match (to be deleted)
-        db.get().query('INSERT INTO matches (homeTeamId, awayTeamId, winningTeamId, isValid) VALUES(1234, 5678, 1234, 1)', function (err, result)
+        db.get().query('INSERT INTO matches (homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid) VALUES(1234, 5678, 1234, 1, 1)', function (err, result)
         {
             if (err)
             {

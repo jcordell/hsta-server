@@ -23,12 +23,12 @@ describe('Test create_match functionality', function() {
     it('Create match with valid input', function (done) {
 
         // remove decklist (if exists)
-        db.get().query('DELETE FROM matches WHERE matchid = \'1\'', function (err, result) {
+        db.get().query('DELETE FROM matches WHERE matchid = 1', function (err, result) {
             if (err) done(new Error(err.message));
 
             // test create match passing in valid input
 
-            server.get('/api/create_match?homeTeamId=012&awayTeamId=345&winningTeamId=012&isValid=1')
+            server.get('/api/create_match?homeTeamId=012&awayTeamId=345&winningTeamId=012&tournamentid=1&isValid=1')
                 .expect(200)
                 .end(function (err, res) {
                     if (err)
