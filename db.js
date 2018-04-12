@@ -13,7 +13,16 @@ var state = {
 }
 
 exports.connect = function(mode, done) {
-    state.pool = mysql.createPool(process.env.JAWSDB_URL);
+    if (mode == 'mode_test') {
+        state.pool = mysql.createPool({
+            host: 'localhost',
+            user: 'root',
+            password: 'Badgers1!',
+            database: mode === exports.MODE_PRODUCTION ? PRODUCTION_DB : TEST_DB
+        })
+    } else {
+        state.pool = mysql.createPool(process.env.JAWSDB_URL);
+    }
 
     state.mode = mode
     done()

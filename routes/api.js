@@ -30,9 +30,7 @@ var parse_deck_info = function (data, done) {
             decoded_deckstring = {};
         }
 
-        decoded_deckstring['deckname'] = data[i].deckname;
-        decoded_deckstring['deckcode'] = data[i].deckcode;
-        deck_info.push([decoded_deckstring]);
+        deck_info.push(data[i].deckcode);
         deck_names.push(data[i].deckname);
     }
     done({success : true, decks: deck_info, deck_names : deck_names})
