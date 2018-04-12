@@ -39,7 +39,7 @@ exports.get_user_tournament_decklists = function(userId, tournamentId, done) {
     })
 };
 
-exports.get_user_tournament_matches = function(userId, tournamentId, done) {
+exports.get_user_tournament_matches_count = function(userId, tournamentId, done) {
     db.get().query("SELECT COUNT (*) FROM matches WHERE tournamentid = ? AND (homeTeamId = ? or awayTeamId = ?)",
             [tournamentId, userId], function(err, count) {
         if(err) {
