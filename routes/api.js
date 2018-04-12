@@ -361,7 +361,6 @@ router.get('/add_tournament_deck', function(req, res){
     var userid = req.query.userid;
     var tournamentid = req.query.tournamentid;
     var deckcode = req.query.deckcode.split(",");
-    var banned = req.query.banned;
     db_api.add_tournament_deck(userid, tournamentid, deckcode, function(err, status){
         if (err){
             console.log("error db_api adding tournament deck");

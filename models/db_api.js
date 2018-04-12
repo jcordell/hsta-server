@@ -177,30 +177,9 @@ var populate_tournament_deck_array = function(userid, tournamentid, deckcode, do
     });
 
     Promise.all(promises).then(done(new_table));
-}
-/*router.get('/ban_tournament_deck', function(req, res){
-    var userid = req.query.userid;
-    var tournamentid = req.query.tournamentid;
-    var deckcode = req.query.deckcode;
-    db_api.ban_tournament_deck(userid, tournamentid, deckcode, function(err, status){
-        if(err){
-            console.log("error db_api banning deck");
-            console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: false, error: err.message}));
-        }
-        else {
-            console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: true}));
-        }
-    })
+};
 
-     db.get().query('UPDATE ownedBy ' +
-        'SET deckname = ? ' +
-        'WHERE userid = ? AND deckcode = ?', [deckname, userid, deckcode], function(err, result){
-
-
-});*/
-exports.ban_tournament_deck = function(userid, tournamentid, deckcode){
+exports.ban_tournament_deck = function(userid, tournamentid, deckcode, done){
     db.get().query('UPDATE decksInTournament SET banned = ? WHERE userid = ? AND deckcode = ?',
         [1, userid, deckcode], function(err, result){
         if(err){
@@ -213,7 +192,7 @@ exports.ban_tournament_deck = function(userid, tournamentid, deckcode){
         }
 
         })
-}
+};
 
 exports.add_tournament_deck = function(userid, tournamentid, deckcode, done) {
 

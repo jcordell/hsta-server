@@ -40,4 +40,19 @@ describe('Add tournament deck functionality', function() {
                     done();
                 })
         });
+    it('Add tournament deck with multiple deckcodes', function(done) {
+        server.get('/api/add_tournament_deck?userid=4&tournamentid=1&deckcode=dc1')
+
+            .expect(200)
+            .end(function (err, res) {
+                if (err)
+                    done(new Error(err.message));
+
+                res.status.should.equal(200);
+
+                // response should equal json string, weird commat formatting
+                res.text.should.equal('\{\"success\":true}');
+                done();
+            })
+    })
 });
