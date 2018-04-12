@@ -130,6 +130,7 @@ var compare_played_deckjson_to_saved_deckstring = function(saved_deckjson, playe
 
      {
         "userid": 1,
+        "tournamentid" : 1,
         "deckjson" : {
             "1": 1,
             "2" : 5
@@ -255,7 +256,7 @@ returns
 {
     numDecks : int,
     matches_played : boolean,
-    decks : [ list of deck info ]
+    decks : [ list of deck info ],
 }
  */
 router.get('/join_tournament', function(req, res) {
@@ -283,10 +284,7 @@ router.get('/join_tournament', function(req, res) {
                                 console.log(err.message);
                                 res.send(JSON.stringify({ success : false, err : err.message}));
                             } else {
-                                console.log('count ' + count);
-
-
-                                if (count > 0) {
+                                if (count[0]['COUNT(*)'] > 0) {
                                     json_data['matches_played'] = true;
                                 } else {
                                     json_data['matches_played'] = false;

@@ -40,8 +40,8 @@ exports.get_user_tournament_decklists = function(userId, tournamentId, done) {
 };
 
 exports.get_user_tournament_matches_count = function(userId, tournamentId, done) {
-    db.get().query("SELECT COUNT (*) FROM matches WHERE tournamentid = ? AND (homeTeamId = ? or awayTeamId = ?)",
-            [tournamentId, userId], function(err, count) {
+    db.get().query("SELECT COUNT(*) FROM matches WHERE tournamentid = ? AND (homeTeamId = ? OR awayTeamId = ?)",
+            [tournamentId, userId, userId], function(err, count) {
         if(err) {
             console.log(err.message);
             return done(err);
@@ -270,17 +270,26 @@ exports.add_tournament_deck = function(userid, tournamentid, deckcode, done) {
 
 exports.join_tournament = function(userid, tournamentid, done) {
     var values = [userid, tournamentid];
-    db.get().query('INSERT INTO playsInTournament (userid, tournamentid) VALUES (?,?)', values, function(err, result) {
-        if (err) {
-            console.log(err.message);
-            return done(err);
+    // remove from playsInTournament if already exists
+    db.get().query('DELETE FROM playsInTournament WHERE userid = ? AND tournamentid = ?', values, function(err, result) {
+        if(err) {
+            console.log('Error in deleting from playsInTournament');
+            done(err);
         }
+        db.get().query('INSERT INTO playsInTournament (userid, tournamentid) VALUES (?,?)', values, function(err, result) {
+            if (err) {
+                console.log('error in inserting into playsInTournament');
+                console.log(err.message);
+                return done(err);
+            }
 
-        // find how many decks are allowed in tournament
-        numDecks = get_num_tournament_decks(tournamentid, function(err, numDecks) {
-            done(null, numDecks[0].numDecks);
-        });
+            // find how many decks are allowed in tournament
+            numDecks = get_num_tournament_decks(tournamentid, function(err, numDecks) {
+                done(null, numDecks[0].numDecks);
+            });
+        })
     })
+
 };
 
 exports.create_match= function(homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, done)
