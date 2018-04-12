@@ -23,4 +23,5 @@ require('../tests/test_create_match.js');
 require('../tests/test_delete_match.js');
 require('../tests/test_get_match.js');
 require('../tests/test_update_match_result');
+require('../tests/test_add_tournament_deck');
 

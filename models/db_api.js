@@ -1,4 +1,6 @@
 var db = require('../db.js');
+var async = require('async');
+//var await = require('await');
 
 exports.create_user = function(battletag, done) {
   var values = [battletag];
@@ -113,24 +115,8 @@ var get_num_tournament_decks = function(tournamentid, done) {
         return done(null, numDecks);
     })
 }
-/*delete this
-* exports.get_user_decklists = function(userId, done) {
-    db.get().query("SELECT deckname, deckcode FROM ownedBy WHERE userid = ?", [userId], function (err, rows) {
-        if (err) {
-            console.log('error in query');
-            console.log(err.message);
-            return done(err);
-        }
-        done(null, rows)
-    })
 
-    matches : {
-player1: userid,
-player2: userid,
-status: winner userid/unplayed,
-date: date
-}
-};*/
+
 exports.get_tournaments = function(userid, done){
     db.get().query("SELECT name, tournamentid FROM tournament WHERE userid = ?", [userid], function(err, rows){
         if (err) {
@@ -138,34 +124,118 @@ exports.get_tournaments = function(userid, done){
             console.log(err.message);
             return done(err);
         }
-        var tInfo = '{"tournaments":[{}]}';
+        var tInfo = ['{"tournaments":[]}'];
+        var i = 0;
+        var x = 0;
+        var something = forloop(tInfo);
 
-        for (var i = 0; i < rows.length; i++) {
-            db.get().query("SELECT * FROM matches WHERE tournamentId = ?", rows[i][0], function(err2, matchRows){
+        function forloop(tInfo, done) {
+            async.forEachSeries(rows, function (rows, callback) {
+                i++;
+                db.get().query("SELECT * FROM matches WHERE tournamentId = ?", [rows.tournamentid], function (err2, matchRows)
+                {
+                    if (err2) {
+                        console.log('error in getting matches');
+                        console.log(err2.message);
+                        return done(err)
+                    }
+
+                    async.forEachSeries(matchRows, function (matchRows, callback) {
+                        x++;
+                        var obj = JSON.parse(tInfo);
+                        obj['tournaments'].push({
+                            "tournamentname": rows.name,
+                            "matches": {
+                                "matchid": matchRows.matchid,
+                                "player1": matchRows.homeTeamId,
+                                "player2": matchRows.awayTeamId,
+                                "winner": matchRows.winningTeamId,
+                                "isValid": matchRows.isValid
+                            }
+                        });
+                        tInfo = JSON.stringify(obj);
+                        console.log(i +"after stringifyk" + tInfo);
+                        if ((i === rows.length) && (x === matchRows.length))
+                            done(null, tInfo);
+                        callback();
+
+                    });
+                });
+                //await delay();
+                /*if(i === rows.length)
+                {
+                    done(null, tInfo);
+                }*/
+                callback();
+            });
+
+            return tInfo;
+        };
+       /* for (var i = 0; i < rows.length; i++)
+        {
+            db.get().query("SELECT * FROM matches WHERE tournamentId = ?", [rows[i].tournamentid], function(err2, matchRows)
+            {
                 if (err2){
                     console.log('error in getting matches');
                     console.log(err2.message);
                     return done(err)
                 }
-                for(var x = 0; x < matchRows.length; x++) {
-                    var obj = JSON.parse(jsonStr);
+
+                for(var x = 0; x < matchRows.length; x++)
+                {
+                    console.log("rows")
+                    console.log(i);
+                    console.log(rows[7].name);
+                    console.log("rows")
+                    var obj = JSON.parse(tInfo);
                     obj['tournaments'].push({
-                        "tournamentname": rows[i][0],
+                        "tournamentname": rows[i].name,
                         "matches": {
-                            "matchid":matchRows[x][0],
-                            "player1":matchRows[x][1],
-                            "player2":matchRows[x][2],
-                            "winner":matchRows[x][3],
-                            "isValid":matchRows[x][4]
+                            "matchid":matchRows[x].matchid,
+                            "player1":matchRows[x].homeTeamId,
+                            "player2":matchRows[x].awayTeamId,
+                            "winner":matchRows[x].winningTeamId,
+                            "isValid":matchRows[x].isValid
                         }
                     });
                     tInfo = JSON.stringify(obj);
                 }
             })
-        }
-        done(null, tInfo);
+        }*/
+
+
+        //done(null, something);
     })
-}
+};
+exports.add_tournament_deck = function(userid, tournamentid, deckcode, banned, done) {
+
+    db.get().query('DELETE FROM decksintournament WHERE userid = ? AND tournamentid = ?', [userid, tournamentid], function(err){
+        if (err){
+            console.log("Error deleting decks from tournament");
+            console.log(err.message);
+            return done(err);
+        }
+    });
+    var counter = 0;
+    forEach(deckcode, function (deckcodes) {
+        var status;
+        db.get().query('INSERT INTO decksintournament (deckcode, userid, tournamentid, banned) VALUES (?,?,?,?)', [deckcodes, userid, tournamentid, banned], function(err, result){
+            if (err){
+                console.log("error inserting into decksintourmanet");
+                console.log(err.message);
+                return done(err);
+            }
+            else {
+                counter++;
+                status.push(result);
+                if (counter === deckcode.length)
+                    done(null, result);
+            }
+        })
+
+    })
+
+};
 
 exports.join_tournament = function(userid, tournamentid, done) {
     var values = [userid, tournamentid];
