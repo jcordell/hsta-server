@@ -40,10 +40,8 @@ describe('Test get_tournaments() functionality', function() {
             .end(function (err, res) {
                 if (err)
                     done(new Error(err.message));
-                console.log(res);
-                res.status.should.equal(300);
+                res.status.should.equal(200);
                 console.log("testing2");
-                done();
         });
                 /*db_api.get_tournaments(6, function(err, result) {
                     if (err){
