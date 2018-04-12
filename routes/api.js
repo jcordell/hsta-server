@@ -362,7 +362,7 @@ router.get('/add_tournament_deck', function(req, res){
     var tournamentid = req.query.tournamentid;
     var deckcode = req.query.deckcode.split(",");
     var banned = req.query.banned;
-    db_api.add_tournament_deck(userid, tournamentid, deckcode, banned, function(err, status){
+    db_api.add_tournament_deck(userid, tournamentid, deckcode, function(err, status){
         if (err){
             console.log("error db_api adding tournament deck");
             console.log(JSON.stringify(status));
@@ -390,7 +390,7 @@ router.get('/ban_tournament_deck', function(req, res){
             res.send(JSON.stringify({success: true}));
         }
     })
-})
+});
 
 /* input: params: matchid, winnerid
  * return: { 'success' : true/false, 'error' : none/error_code }*/

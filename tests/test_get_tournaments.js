@@ -42,7 +42,7 @@ describe('Test get_tournaments() functionality', function() {
                     //console.log(result.tournaments);
                     console.log(obj);
                     console.log(obj.tournaments[0].matches);
-                    obj.tournaments[0].tournamentname.should.equal('test_get');
+                    obj.tournaments[0].tournamentname.should.equal('test_tournament');
                     obj.tournaments[0].matches.matchid.should.equal(1);
 
                 })
