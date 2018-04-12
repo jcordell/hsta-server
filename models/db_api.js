@@ -83,9 +83,9 @@ exports.login = function(battletag, done) {
     })
 };
 
-exports.create_tournament = function(name, numDecks, done) {
-    var values = [name, numDecks];
-    db.get().query('INSERT INTO tournament (name, numDecks) VALUES(?,?)', values, function(err, result) {
+exports.create_tournament = function(name, numDecks, userid, done) {
+    var values = [name, numDecks, userid];
+    db.get().query('INSERT INTO tournament (name, numDecks, userid) VALUES(?,?,?)', values, function(err, result) {
         if (err) {
             console.log(err.message);
             return done(err);
@@ -111,6 +111,59 @@ var get_num_tournament_decks = function(tournamentid, done) {
             return done(err);
         }
         return done(null, numDecks);
+    })
+}
+/*delete this
+* exports.get_user_decklists = function(userId, done) {
+    db.get().query("SELECT deckname, deckcode FROM ownedBy WHERE userid = ?", [userId], function (err, rows) {
+        if (err) {
+            console.log('error in query');
+            console.log(err.message);
+            return done(err);
+        }
+        done(null, rows)
+    })
+
+    matches : {
+player1: userid,
+player2: userid,
+status: winner userid/unplayed,
+date: date
+}
+};*/
+exports.get_tournaments = function(userid, done){
+    db.get().query("SELECT name, tournamentid FROM tournament WHERE userid = ?", [userid], function(err, rows){
+        if (err) {
+            console.log('error in query');
+            console.log(err.message);
+            return done(err);
+        }
+        var tInfo = '{"tournaments":[{}]}';
+
+        for (var i = 0; i < rows.length; i++) {
+            db.get().query("SELECT * FROM matches WHERE tournamentId = ?", rows[i][0], function(err2, matchRows){
+                if (err2){
+                    console.log('error in getting matches');
+                    console.log(err2.message);
+                    return done(err)
+                }
+                for(var x = 0; x < matchRows.length; x++) {
+                    var obj = JSON.parse(jsonStr);
+                    obj['tournaments'].push({
+                        "tournamentname": rows[i][0],
+                        "matches": {
+                            "matchid":matchRows[x][0],
+                            "player1":matchRows[x][1],
+                            "player2":matchRows[x][2],
+                            "winner":matchRows[x][3],
+                            "isValid":matchRows[x][4]
+                        }
+                    });
+                    tInfo = JSON.stringify(obj);
+                }
+            })
+        }
+        done(null, tInfo);
     })
 }
 
@@ -173,4 +226,20 @@ exports.get_match= function(matchid, done)
     })
 
 };
+
+/*
+* get().query('UPDATE ownedBy ' +
+        'SET deckname = ? ' +
+        'WHERE userid = ? AND deckcode = ?', [deckname, userid, deckcode], function(err, result){*/
+
+exports.update_match_result = function(matchid, winnerid, done){
+    db.get().query('UPDATE matches SET winningTeamId = ? ' +
+        'WHERE matchid = ?', [winnerid, matchid], function(err, result){
+        if (err){
+            console.log(err.message);
+            return done(err);
+        }
+        done(null, result);
+    })
+}
 

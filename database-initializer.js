@@ -59,7 +59,7 @@ var cmds = [
    "DROP TABLE card",
     "CREATE TABLE IF NOT EXISTS card (name VARCHAR(255), class VARCHAR(255), id VARCHAR(255), PRIMARY KEY (id)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
-    "CREATE TABLE IF NOT EXISTS user (userid INT NOT NULL AUTO_INCREMENT, email VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (userid)) ENGINE=InnoDB",
+    "CREATE TABLE IF NOT EXISTS user (userid INT NOT NULL AUTO_INCREMENT, battletag VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (userid)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS ownedBy " +
         "(deckname VARCHAR(255) NOT NULL, " +
         "userid INT NOT NULL, " +
@@ -67,7 +67,7 @@ var cmds = [
         "PRIMARY KEY (userid, deckcode), " +
         "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB",
     "CREATE TABLE IF NOT EXISTS tournament (tournamentid INT NOT NULL AUTO_INCREMENT, name VARCHAR(255)," +
-        "numDecks INT unsigned, PRIMARY KEY (tournamentid)) ENGINE=InnoDB",
+        "numDecks INT unsigned, userid INT NOT NULL, PRIMARY KEY (tournamentid), FOREIGN KEY(userid) REFERENCES user(userid) ON DELETE CASCADE) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS playsInTournament (tournamentid INT NOT NULL, userid INT NOT NULL," +
         "PRIMARY KEY (tournamentid, userid)," +
         "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE," +
