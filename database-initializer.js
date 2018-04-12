@@ -26,22 +26,11 @@ var con;
 
 if(isCreated===1)
 {
-    con = mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "Badgers1!",
-        database: "hsdb"
-    });
+    con = mysql.createConnection(process.env.JAWSDB_URL);
 }
 else
 {
-    con = mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "Badgers1!"
-    });
-
-    isCreated= 1;
+    con = mysql.createConnection(process.env.JAWSDB_URL);
 }
 
 
@@ -98,8 +87,7 @@ var cmds = [
     "(deckcode VARCHAR(255) NOT NULL, userid INT NOT NULL, tournamentid INT NOT NULL, banned INT NOT NULL, " +
     "PRIMARY KEY (userid, tournamentid, deckcode), " +
     "FOREIGN KEY (userid, deckcode) REFERENCES ownedBy (userid, deckcode), " +
-    "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid)) ENGINE=InnoDB"
-]
+    "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid)) ENGINE=InnoDB"]
 
 con.connect(function(err) {
     if (err) throw err;

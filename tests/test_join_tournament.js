@@ -19,7 +19,7 @@ db.connect(db.MODE_TEST, function(err) {
 });
 
 describe('request(app)', function() {
-    it('Join tournament with expected input', function (done) {
+    it('Join tournament no matches or decks submitted with expected input', function (done) {
 
         // remove decklist (if exists)
         db.get().query('INSERT INTO tournament (name, numDecks, userid) VALUES(\'join_tournament_test\', 3, 5)', function (err, result) {
@@ -35,7 +35,7 @@ describe('request(app)', function() {
                     res.status.should.equal(200);
 
                     // response should equal json string, weird commat formatting
-                    res.text.should.equal('\{\"success\":true,\"numDecks\":3}');
+                    res.text.should.equal('\{\"success\":true,\"decks\":[],\"deck_names\":[],\"numDecks\":3}');
                     done();
                 })
         });
