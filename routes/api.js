@@ -234,10 +234,6 @@ router.get('/create_user', function(req, res) {
     });
 });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> update_match_result
 /* input: params: userid, deckcode
  * return: { 'success' : true/false, 'error' : none/error_code }*/
 router.get('/delete_tournament', function(req, res) {
