@@ -124,53 +124,51 @@ exports.get_tournaments = function(userid, done){
             console.log(err.message);
             return done(err);
         }
-        var tInfo = ['{"tournaments":[]}'];
-        var i = 0;
+
+       var thing = process(rows, function(err, something)
+       {
+           if (err) {
+               console.log(err.message);
+               return done(err);
+           }
+           else return done(null, something);
+       });
         var x = 0;
-        var something = forloop(tInfo);
 
-        function forloop(tInfo, done) {
-            async.forEachSeries(rows, function (rows, callback) {
-                i++;
-                db.get().query("SELECT * FROM matches WHERE tournamentId = ?", [rows.tournamentid], function (err2, matchRows)
+        function process(rows, cb) {
+            var tInfo = '{"tournaments":[]}';
+            async.forEach(rows, function (rows, callback) {
+                db.get().query("SELECT * FROM matches WHERE tournamentId = ?",
+                    [rows.tournamentid], function (err2, matchRows)
                 {
-                    if (err2) {
-                        console.log('error in getting matches');
-                        console.log(err2.message);
-                        return done(err)
-                    }
-
-                    async.forEachSeries(matchRows, function (matchRows, callback) {
-                        x++;
+                        if (err2) {
+                            console.log('error in getting matches');
+                            console.log(err2.message);
+                            return done(err)
+                        }
+                    for (let match of matchRows)
+                    {
                         var obj = JSON.parse(tInfo);
+
                         obj['tournaments'].push({
                             "tournamentname": rows.name,
                             "matches": {
-                                "matchid": matchRows.matchid,
-                                "player1": matchRows.homeTeamId,
-                                "player2": matchRows.awayTeamId,
-                                "winner": matchRows.winningTeamId,
-                                "isValid": matchRows.isValid
+                                "matchid": match.matchid,
+                                "player1": match.homeTeamId,
+                                "player2": match.awayTeamId,
+                                "winner": match.winningTeamId,
+                                "isValid": match.isValid
                             }
                         });
+
                         tInfo = JSON.stringify(obj);
-                        console.log(i +"after stringifyk" + tInfo);
-                        if ((i === rows.length) && (x === matchRows.length))
-                            done(null, tInfo);
-                        callback();
-
+                    }
+                        callback(null, matchRows);
                     });
+            },function(){
+                    cb(null,tInfo);
                 });
-                //await delay();
-                /*if(i === rows.length)
-                {
-                    done(null, tInfo);
-                }*/
-                callback();
-            });
-
-            return tInfo;
-        };
+        }
        /* for (var i = 0; i < rows.length; i++)
         {
             db.get().query("SELECT * FROM matches WHERE tournamentId = ?", [rows[i].tournamentid], function(err2, matchRows)
@@ -204,7 +202,7 @@ exports.get_tournaments = function(userid, done){
         }*/
 
 
-        //done(null, something);
+
     })
 };
 exports.add_tournament_deck = function(userid, tournamentid, deckcode, banned, done) {
