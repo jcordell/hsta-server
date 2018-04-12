@@ -30,11 +30,7 @@ if(isCreated===1)
 }
 else
 {
-    con = mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "Badgers1!"
-    });
+    con = mysql.createConnection(process.env.JAWSDB_URL);
 
     isCreated= 1;
 }
