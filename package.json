@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "test": "node test-database-initializer.js && mocha ./tests/test_masterfile.js --exit"
+    "test": "node test-database-initializer.js && mocha ./tests/test_masterfile.js --exit",
+	"database-initializer": "node ./database-initializer.js --exit"
   },
   "dependencies": {
     "async": "^2.6.0",
