@@ -72,9 +72,19 @@ var cmds = [
         "PRIMARY KEY (tournamentid, userid)," +
         "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE," +
         "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE=InnoDB",
-    "CREATE TABLE IF NOT EXISTS matches " +
-        "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, isValid INT, PRIMARY KEY (matchid)) ENGINE=InnoDB"
 
+    "CREATE TABLE IF NOT EXISTS matches " +
+        "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, tournamentid INT NOT NULL, " +
+        "isValid INT, " +
+        "PRIMARY KEY (matchid), " +
+        "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB",
+
+    "CREATE TABLE IF NOT EXISTS decksInTournament " +
+        "(deckcode VARCHAR(255) NOT NULL, userid INT NOT NULL, tournamentid INT NOT NULL, banned INT NOT NULL, " +
+        "PRIMARY KEY (userid, tournamentid), " +
+        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE, " +
+        "FOREIGN KEY (deckcode) REFERENCES ownedBy (deckcode) ON DELETE CASCADE, " +
+        "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB"
 ]
 
 con.connect(function(err) {
