@@ -234,7 +234,10 @@ router.get('/create_user', function(req, res) {
     });
 });
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> update_match_result
 /* input: params: userid, deckcode
  * return: { 'success' : true/false, 'error' : none/error_code }*/
 router.get('/delete_tournament', function(req, res) {
@@ -281,7 +284,7 @@ router.get('/create_tournament', function(req, res) {
 
     db_api.create_tournament(name, numDecks, userid, function(err, tournamentid) {
 
-        // likely tournament already created
+        //likely tournament already created
         if(err) {
             console.log(err.message);
             res.send(JSON.stringify({success : false, error: err.message}));
@@ -297,9 +300,10 @@ router.get('/create_match', function(req, res)
     var homeTeamId = req.query.homeTeamId;
     var awayTeamId= req.query.awayTeamId;
     var winningTeamId= req.query.winningTeamId;
+    var tournamentid= req.query.tournamentid;
     var isValid= req.query.isValid;
 
-    db_api.create_match(homeTeamId, awayTeamId, winningTeamId, isValid, function(err, matchid)
+    db_api.create_match(homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, function(err, matchid)
     {
         if(err)
         {
@@ -352,6 +356,42 @@ router.get('/get_match', function(req, res)
             console.log(JSON.stringify(status));
             res.send(JSON.stringify({success: true}));
         }
+    })
+});
+/* input: params: userid
+return: tournament jsons owned by a userid
+ */
+router.get('/get_tournaments', function(req, res){
+    var userid = req.quert.userid;
+    db_api.get_tournaments(userid, function(err, status){
+        if(err){
+            console.log(JSON.stringify(status));
+            res.send(JSON.stringify({success: false, error: err.message}));
+        }
+        else{
+            console.log(JSON.stringify(status));
+            res.send(status)
+        }
+
+    })
+})
+
+/* input: params: matchid, winnerid
+ * return: { 'success' : true/false, 'error' : none/error_code }*/
+router.get('/update_match_result', function(req, res) {
+    var matchid = req.query.matchid;
+    var winnerid = req.query.winnerid;
+
+    db_api.update_match_result(matchid, winnerid, function(err, status){
+        if (err) {
+            console.log(JSON.stringify(status));
+            res.send(JSON.stringify({success: false, error: err.message}));
+        }
+        else {
+            console.log(JSON.stringify(status));
+            res.send(JSON.stringify({success: true}));
+        }
+
     })
 });
 

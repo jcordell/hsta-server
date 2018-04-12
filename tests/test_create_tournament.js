@@ -1,12 +1,13 @@
-var supertest = require('supertest');
+
 var should = require('should');
-var server = supertest.agent("http://localhost:3000");
+
 
 var db_api = require('../models/db_api');
 var db = require('../db.js');
 
 // connect to app (hearthstone server)
 var app = require('../app.js')('test');
+var request = require('supertest')(app);
 
 // start app on port 3000
 //app.listen(3000);
@@ -29,7 +30,9 @@ describe('request(app)', function() {
             if (err) done(new Error(err.message));
 
             // test create tournament with expected input
-            server.get('/api/create_tournament?userid=5&name=test_tournament&numDecks=3')
+
+            request.get('/api/create_tournament?name=test_tournament&numDecks=3&userid=6')
+                
                 .expect(200)
                 .end(function (err, res) {
                     if (err)
