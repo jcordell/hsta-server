@@ -19,25 +19,24 @@ db.connect(db.MODE_TEST, function(err) {
     }
 });
 
-db.get().query('INSERT INTO decksInTournament (deckcode, userid, tournamentid, banned) VALUES(\'dc3\', 4, 1, 0)', function (err, result) {
-    if (err) (console.log(err.message));
-});
-
 describe('ban tournament deck functionality', function() {
     it('Ban one tournament deck', function (done) {
 
+        db.get().query('INSERT INTO decksInTournament (deckcode, userid, tournamentid, banned) VALUES(\'dc3\', 4, 1, 0)', function (err, result) {
+            if (err) (console.log(err.message));
+            server.get('/api/ban_tournament_deck?userid=4&tournamentid=1&deckcode=dc3')
+                .expect(200)
+                .end(function (err, res) {
+                    if (err)
+                        done(new Error(err.message));
 
-        server.get('/api/ban_tournament_deck?userid=4&tournamentid=1&deckcode=dc3')
-            .expect(200)
-            .end(function (err, res) {
-                if (err)
-                    done(new Error(err.message));
+                    res.status.should.equal(200);
 
-                res.status.should.equal(200);
+                    // response should equal json string, weird commat formatting
+                    res.text.should.equal('\{\"success\":true}');
+                    done();
+                })
+        });
 
-                // response should equal json string, weird commat formatting
-                res.text.should.equal('\{\"success\":true}');
-                done();
-            })
     });
 });
