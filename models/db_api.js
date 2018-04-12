@@ -206,8 +206,8 @@ var populate_tournament_deck_array = function(userid, tournamentid, deckcode, do
 };
 
 exports.ban_tournament_deck = function(userid, tournamentid, deckcode, done){
-    db.get().query('UPDATE decksInTournament SET banned = ? WHERE userid = ? AND deckcode = ?',
-        [1, userid, deckcode], function(err, result){
+    db.get().query('UPDATE decksInTournament SET banned = ? WHERE tournamentid = ? AND userid = ? AND deckcode = ?',
+        [1, tournamentid, userid, deckcode], function(err, result){
         if(err){
             console.log("error banning deck");
             console.log(err.message);

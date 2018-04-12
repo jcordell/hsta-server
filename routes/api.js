@@ -403,8 +403,8 @@ router.get('/get_tournaments', function(req, res){
             res.send(JSON.stringify({success: false, error: err.message}));
         }
         else{
-            console.log(JSON.stringify(status));
-            res.send(status)
+            res.send(JSON.stringify({success: true}));
+
         }
     })
 })
