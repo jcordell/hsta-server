@@ -13,7 +13,7 @@ var state = {
 }
 
 exports.connect = function(mode, done) {
-    state.pool = mysql.createPool(process.env.JAWSDB_URL)
+    state.pool = mysql.createPool(process.env.JAWSDB_URL);
 
     state.mode = mode
     done()
