@@ -360,7 +360,7 @@ router.get('/get_tournaments', function(req, res){
 router.get('/add_tournament_deck', function(req, res){
     var userid = req.query.userid;
     var tournamentid = req.query.tournamentid;
-    var deckcode = req.query.deckcode;
+    var deckcode = req.query.deckcode.split(",");
     var banned = req.query.banned;
     db_api.add_tournament_deck(userid, tournamentid, deckcode, banned, function(err, status){
         if (err){

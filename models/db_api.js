@@ -205,31 +205,36 @@ exports.get_tournaments = function(userid, done){
 
     })
 };
+
+var populate_tournament_deck_array = function(userid, tournamentid, deckcode, banned, done) {
+    new_table = [];
+    var promises = deckcode.map(function(deck) {
+        new_table.push([deck, userid, tournamentid, 0])
+    });
+
+    Promise.all(promises).then(done(new_table));
+}
+
 exports.add_tournament_deck = function(userid, tournamentid, deckcode, banned, done) {
 
-    db.get().query('DELETE FROM decksintournament WHERE userid = ? AND tournamentid = ?', [userid, tournamentid], function(err){
+    db.get().query('DELETE FROM decksInTournament WHERE userid = ? AND tournamentid = ?', [userid, tournamentid], function(err){
         if (err){
             console.log("Error deleting decks from tournament");
             console.log(err.message);
             return done(err);
         } else {
-            var counter = 0;
-            async.forEach(deckcode, function (deckcodes) {
-                var status;
-                db.get().query('INSERT INTO decksintournament (deckcode, userid, tournamentid, banned) VALUES (?,?,?,?)', [deckcodes, userid, tournamentid, banned], function(err, result){
+
+            populate_tournament_deck_array(userid, tournamentid, deckcode, banned, function(new_table) {
+                db.get().query('INSERT INTO decksInTournament (deckcode, userid, tournamentid, banned) VALUES ?', [new_table], function(err, result){
                     if (err){
                         console.log("error inserting into decksintourmanet");
                         console.log(err.message);
                         return done(err);
                     }
                     else {
-                        counter++;
-                        status.push(result);
-                        if (counter === deckcode.length)
-                            done(null, result);
+                        done(null, result);
                     }
                 })
-
             })
         }
     });
