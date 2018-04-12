@@ -1,14 +1,14 @@
 var mysql = require('mysql');
 var parse = require('csv-parse');
 var fs = require('fs');
-var cardJSON = 'card-data.json';
-var userJSON = 'user-data.json';
-var ownedJSON = 'ownedBy-data.json';
+var cardJSON = 'json_data/card-data.json';
+var userJSON = 'json_data/user-data.json';
+var ownedJSON = 'json_data/ownedBy-data.json';
 var isCreated=0;
 var index = 0;
 
 
-//holds card json data
+//holds card json_data
 var cardOutput = [];
 var cardID = [];
 var cardName = [];
