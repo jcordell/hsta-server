@@ -1,8 +1,12 @@
+var supertest = require('supertest');
+var should = require('should');
+var server = supertest.agent("http://localhost:3000");
+
 var db_api = require('../models/db_api');
 var db = require('../db.js');
 
-
-
+// connect to app (hearthstone server)
+var app = require('../app.js')('test');
 
 // Connect to test database
 db.connect(db.MODE_TEST, function(err) {
@@ -14,40 +18,48 @@ db.connect(db.MODE_TEST, function(err) {
     }
 });
 
+/*db_api.create_tournament("test_get",3,6, function(err){
 
+    if (err) {
+        console.log("Error creating tournament");
+        console.log(err.message);
+    }
+});
+db_api.create_match(12, 34, 12, 1, 1, function(err) {
+
+    if (err) {
+        console.log("Error creating match");
+        console.log(err.message);
+    }
+});*/
 describe('Test get_tournaments() functionality', function() {
     it('Test get_tournaments() for a user with one tournament', function(done) {
 
-        db_api.create_match(12, 34, 12, 1, function(err, result)
-        {
-
-            if(err)
-            {
-                console.log("Error creating match");
-                done(err.message);
-            }
-            db_api.get_match(result, function(err, data)
-            {
-                if(err)
-                {
-                    console.log(JSON.stringify(data));
-                    done(err.message);
-                }
-                else {
-                    if ((data[0].matchid === result) && (data[0].homeTeamId === 12) &&
-                        (data[0].awayTeamId === 34) && (data[0].winningTeamId === 12)
-                        && (data[0].isValid === 1))
-                    {
-                        delId= result; // dave id to delete entry after test
-
-                        console.log(JSON.stringify(data)); //DEBUG
-                        done();
-
-                    }
-                }
-            });
-
+        server.get('/api/get_tournaments?userid=6')
+            .expect(200)
+            .end(function (err, res) {
+                if (err)
+                    done(new Error(err.message));
+                console.log(res);
+                res.status.should.equal(300);
+                console.log("testing2");
+                done();
         });
+                /*db_api.get_tournaments(6, function(err, result) {
+                    if (err){
+                        console.log("Error getting tournaments");
+                        done(new Error(err.message));
+                    }
+                    console.log(result);
+                    var obj = JSON.parse(result);
+                    console.log("debugging");
+                    //console.log(result.tournaments);
+                    console.log(obj);
+                    console.log(obj.tournaments[0].matches);
+                    obj.tournaments[0].tournamentname.should.equal('test_tournament');
+                    obj.tournaments[0].matches.matchid.should.equal(1);
 
-    })
+                })*/
+            done();
+        });
 });

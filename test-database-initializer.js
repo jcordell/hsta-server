@@ -59,19 +59,19 @@ function createDB() {
 
 var cmds = [
     "DROP TABLE IF EXISTS playsInTournament",
-    "DROP TABLE IF EXISTS ownedBy",
+    "DROP TABLE IF EXISTS decksInTournament",
     "DROP TABLE IF EXISTS matches",
     "DROP TABLE IF EXISTS tournament",
     "DROP TABLE IF EXISTS card",
-    "DROP TABLE IF EXISTS deck",
     "DROP TABLE IF EXISTS has",
+    "DROP TABLE IF EXISTS ownedBy",
     "DROP TABLE IF EXISTS user",
+
 
     "CREATE TABLE IF NOT EXISTS card (name VARCHAR(255), class VARCHAR(255), id VARCHAR(255), PRIMARY KEY (id)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS user (userid INT NOT NULL AUTO_INCREMENT, battletag VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (userid)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS ownedBy " +
-
     "(deckname VARCHAR(255) NOT NULL, " +
     "userid INT NOT NULL, " +
     "deckcode VARCHAR(255) NOT NULL, " +
@@ -89,14 +89,19 @@ var cmds = [
     "PRIMARY KEY (tournamentid, userid)," +
     "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE," +
     "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE=InnoDB",
+
     "CREATE TABLE IF NOT EXISTS matches " +
     "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, tournamentid INT NOT NULL, " +
     "isValid INT, " +
     "PRIMARY KEY (matchid), " +
     "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB",
 
+    "CREATE TABLE IF NOT EXISTS decksInTournament " +
+    "(deckcode VARCHAR(255) NOT NULL, userid INT NOT NULL, tournamentid INT NOT NULL, banned INT NOT NULL, " +
+    "PRIMARY KEY (userid, tournamentid, deckcode), " +
+    "FOREIGN KEY (userid, deckcode) REFERENCES ownedBy (userid, deckcode), " +
+    "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid)) ENGINE=InnoDB"
 ]
-
 
 
 con.connect(function(err) {
@@ -105,6 +110,9 @@ con.connect(function(err) {
 
     try {
         createDB();
+        con.query("set foreign_key_checks=0", function(err, result){
+            if (err) throw err;
+        });
         console.log("hsdb_test sucessfully created!"); //DEBUG
     }
     catch (ER_DB_CREATE_EXISTS) {

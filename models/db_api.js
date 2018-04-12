@@ -1,4 +1,6 @@
 var db = require('../db.js');
+var async = require('async');
+//var await = require('await');
 
 exports.create_user = function(battletag, done) {
   var values = [battletag];
@@ -139,24 +141,8 @@ var get_num_tournament_decks = function(tournamentid, done) {
         return done(null, numDecks);
     })
 }
-/*delete this
-* exports.get_user_decklists = function(userId, done) {
-    db.get().query("SELECT deckname, deckcode FROM ownedBy WHERE userid = ?", [userId], function (err, rows) {
-        if (err) {
-            console.log('error in query');
-            console.log(err.message);
-            return done(err);
-        }
-        done(null, rows)
-    })
 
-    matches : {
-player1: userid,
-player2: userid,
-status: winner userid/unplayed,
-date: date
-}
-};*/
+
 exports.get_tournaments = function(userid, done){
     db.get().query("SELECT name, tournamentid FROM tournament WHERE userid = ?", [userid], function(err, rows){
         if (err) {
@@ -164,34 +150,102 @@ exports.get_tournaments = function(userid, done){
             console.log(err.message);
             return done(err);
         }
-        var tInfo = '{"tournaments":[{}]}';
 
-        for (var i = 0; i < rows.length; i++) {
-            db.get().query("SELECT * FROM matches WHERE tournamentId = ?", rows[i][0], function(err2, matchRows){
-                if (err2){
-                    console.log('error in getting matches');
-                    console.log(err2.message);
-                    return done(err)
-                }
-                for(var x = 0; x < matchRows.length; x++) {
-                    var obj = JSON.parse(jsonStr);
-                    obj['tournaments'].push({
-                        "tournamentname": rows[i][0],
-                        "matches": {
-                            "matchid":matchRows[x][0],
-                            "player1":matchRows[x][1],
-                            "player2":matchRows[x][2],
-                            "winner":matchRows[x][3],
-                            "isValid":matchRows[x][4]
+       var thing = process(rows, function(err, something)
+       {
+           if (err) {
+               console.log(err.message);
+               return done(err);
+           }
+           else return done(null, something);
+       });
+        function process(rows, cb) {
+            var tInfo = '{"tournaments":[]}';
+            async.forEach(rows, function (rows, callback) {
+                db.get().query("SELECT * FROM matches WHERE tournamentId = ?",
+                    [rows.tournamentid], function (err2, matchRows)
+                {
+                        if (err2) {
+                            console.log('error in getting matches');
+                            console.log(err2.message);
+                            return done(err)
                         }
+                    for (let match of matchRows)
+                    {
+                        var obj = JSON.parse(tInfo);
+
+                        obj['tournaments'].push({
+                            "tournamentname": rows.name,
+                            "matches": {
+                                "matchid": match.matchid,
+                                "player1": match.homeTeamId,
+                                "player2": match.awayTeamId,
+                                "winner": match.winningTeamId,
+                                "isValid": match.isValid
+                            }
+                        });
+
+                        tInfo = JSON.stringify(obj);
+                    }
+                        callback(null, matchRows);
                     });
-                    tInfo = JSON.stringify(obj);
-                }
+            },function(){
+                    cb(null,tInfo);
+                });
+        }
+    })
+};
+
+var populate_tournament_deck_array = function(userid, tournamentid, deckcode, done) {
+    new_table = [];
+    var promises = deckcode.map(function(deck) {
+        new_table.push([deck, userid, tournamentid, 0])
+    });
+
+    Promise.all(promises).then(done(new_table));
+};
+
+exports.ban_tournament_deck = function(userid, tournamentid, deckcode, done){
+    db.get().query('UPDATE decksInTournament SET banned = ? WHERE userid = ? AND deckcode = ?',
+        [1, userid, deckcode], function(err, result){
+        if(err){
+            console.log("error banning deck");
+            console.log(err.message);
+            return done(err);
+        }
+        else {
+            done(null, result);
+        }
+
+        })
+};
+
+exports.add_tournament_deck = function(userid, tournamentid, deckcode, done) {
+
+    db.get().query('DELETE FROM decksInTournament WHERE userid = ? AND tournamentid = ?', [userid, tournamentid], function(err){
+        if (err){
+            console.log("Error deleting decks from tournament");
+            console.log(err.message);
+            return done(err);
+        } else {
+
+            populate_tournament_deck_array(userid, tournamentid, deckcode, function(new_table) {
+                db.get().query('INSERT INTO decksInTournament (deckcode, userid, tournamentid, banned) VALUES ?', [new_table], function(err, result){
+                    if (err){
+                        console.log("error inserting into decksInTournament");
+                        console.log(err.message);
+                        return done(err);
+                    }
+                    else {
+                        done(null, result);
+                    }
+                })
             })
         }
-        done(null, tInfo);
-    })
-}
+    });
+
+
+};
 
 exports.join_tournament = function(userid, tournamentid, done) {
     var values = [userid, tournamentid];
