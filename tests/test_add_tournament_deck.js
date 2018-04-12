@@ -27,6 +27,7 @@ describe('Add tournament deck functionality', function() {
 
             // test create tournament with expected input
             server.get('/api/add_tournament_deck?userid=4&tournamentid=1&deckcode=dc1')
+
                 .expect(200)
                 .end(function (err, res) {
                     if (err)
