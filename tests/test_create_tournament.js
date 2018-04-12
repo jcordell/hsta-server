@@ -29,7 +29,7 @@ describe('request(app)', function() {
             if (err) done(new Error(err.message));
 
             // test create tournament with expected input
-            server.get('/api/create_tournament?name=test_tournament&numDecks=3')
+            server.get('/api/create_tournament?userid=5&name=test_tournament&numDecks=3')
                 .expect(200)
                 .end(function (err, res) {
                     if (err)

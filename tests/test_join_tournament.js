@@ -22,7 +22,7 @@ describe('request(app)', function() {
     it('Join tournament with expected input', function (done) {
 
         // remove decklist (if exists)
-        db.get().query('INSERT INTO tournament (name, numDecks) VALUES(\'join_tournament_test\', 3)', function (err, result) {
+        db.get().query('INSERT INTO tournament (name, numDecks, userid) VALUES(\'join_tournament_test\', 3, 2)', function (err, result) {
             if (err) done(new Error(err.message));
 
             // test join tournament with expected input

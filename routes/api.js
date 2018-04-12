@@ -14,6 +14,30 @@ decode = function(deckcode) {
     }
 }
 
+var parse_deck_info = function (data, done) {
+    var deck_info = [];
+    var deck_names = [];
+    var decoded_deckstring = [];
+    var deckcodes = [];
+    for (var i = 0; i < data.length; i++) {
+        // get decoded deckcode data
+        deckcodes[i] = data[i].deckcode;
+
+        decoded_deckstring = decode(deckcodes[i]);
+
+        // if unable to decode or invalid deckstring
+        if (decoded_deckstring == null) {
+            decoded_deckstring = {};
+        }
+
+        decoded_deckstring['deckname'] = data[i].deckname;
+        decoded_deckstring['deckcode'] = data[i].deckcode;
+        deck_info.push([decoded_deckstring]);
+        deck_names.push(data[i].deckname);
+    }
+    done({success : true, decks: deck_info, deck_names : deck_names})
+};
+
 /* GET user decklists.
 * Input: params: userid
 * Return: array of decklists. Example: [["deckname1", deckcode1],["deckname2", deckcode2"]]*/
@@ -25,27 +49,9 @@ router.get('/get_user_decklists', function(req, res) {
             res.send(JSON.stringify({success : false, mesage : err.message}));
         } else {
             // reformat deck info to an array
-            var deck_info = [];
-            var deck_names = [];
-            var decoded_deckstring = [];
-            var deckcodes = [];
-            for (var i = 0; i < data.length; i++) {
-                // get decoded deckcode data
-                deckcodes[i] = data[i].deckcode;
-
-                decoded_deckstring = decode(deckcodes[i]);
-
-                // if unable to decode or invalid deckstring
-                if (decoded_deckstring == null) {
-                    decoded_deckstring = {};
-                }
-
-                decoded_deckstring['deckname'] = data[i].deckname;
-                decoded_deckstring['deckcode'] = data[i].deckcode;
-                deck_info.push([decoded_deckstring]);
-                deck_names.push(data[i].deckname);
-            }
-            res.send(JSON.stringify({success : true, decks: deck_info, deck_names : deck_names}));
+            parse_deck_info(data, function(json_data) {
+                res.send(json_data)
+            })
         }
     });
 });
@@ -228,26 +234,6 @@ router.get('/create_user', function(req, res) {
     });
 });
 
-/* create new tournament
- * input: param: tournament name, number of decks
- * return: { 'success' : true/false, 'error' : none/error_code }*/
-router.get('/create_tournament', function(req, res) {
-    var name = req.query.name;
-    var numDecks = req.query.numDecks;
-
-    db_api.create_tournament(name, numDecks, function(err, tournamentid) {
-
-        // likely tournament already created
-        if(err) {
-            console.log(err.message);
-            res.send(JSON.stringify({success : false, error: err.message}));
-        }
-        else {
-            res.send(JSON.stringify({success : true, id : tournamentid}));
-        }
-    });
-});
-
 
 /* input: params: userid, deckcode
  * return: { 'success' : true/false, 'error' : none/error_code }*/
@@ -264,6 +250,15 @@ router.get('/delete_tournament', function(req, res) {
     });
 });
 
+
+/*
+returns
+{
+    numDecks : int,
+    matches_played : boolean,
+    decks : [ list of deck info ]
+}
+ */
 router.get('/join_tournament', function(req, res) {
     var userid = req.query.userid;
     var tournamentid = req.query.tournamentid;
@@ -282,8 +277,9 @@ router.get('/join_tournament', function(req, res) {
 router.get('/create_tournament', function(req, res) {
     var name = req.query.name;
     var numDecks = req.query.numDecks;
+    var userid = req.query.userid;
 
-    db_api.create_tournament(name, numDecks, function(err, tournamentid) {
+    db_api.create_tournament(name, numDecks, userid, function(err, tournamentid) {
 
         // likely tournament already created
         if(err) {

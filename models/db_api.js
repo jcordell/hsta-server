@@ -83,9 +83,9 @@ exports.login = function(battletag, done) {
     })
 };
 
-exports.create_tournament = function(name, numDecks, done) {
-    var values = [name, numDecks];
-    db.get().query('INSERT INTO tournament (name, numDecks) VALUES(?,?)', values, function(err, result) {
+exports.create_tournament = function(name, numDecks, userid, done) {
+    var values = [name, numDecks, userid];
+    db.get().query('INSERT INTO tournament (name, numDecks, userid) VALUES(?,?,?)', values, function(err, result) {
         if (err) {
             console.log(err.message);
             return done(err);
