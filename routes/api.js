@@ -297,9 +297,10 @@ router.get('/create_match', function(req, res)
     var homeTeamId = req.query.homeTeamId;
     var awayTeamId= req.query.awayTeamId;
     var winningTeamId= req.query.winningTeamId;
+    var tournamentid= req.query.tournamentid;
     var isValid= req.query.isValid;
 
-    db_api.create_match(homeTeamId, awayTeamId, winningTeamId, isValid, function(err, matchid)
+    db_api.create_match(homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, function(err, matchid)
     {
         if(err)
         {
