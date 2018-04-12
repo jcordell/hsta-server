@@ -25,7 +25,7 @@ var delId=0;
 describe('Test get_match() functionality', function() {
     it('Test get_match() for single match', function(done) {
 
-        db_api.create_match(12, 34, 12, 1, function(err, result)
+        db_api.create_match(12, 34, 12, 1, 1, function(err, result)
         {
 
             if(err)
