@@ -41,7 +41,7 @@ describe('Add tournament deck functionality', function() {
                 })
         });
     it('Add tournament deck with multiple deckcodes', function(done) {
-        server.get('/api/add_tournament_deck?userid=4&tournamentid=1&deckcode=dc1')
+        server.get('/api/add_tournament_deck?userid=4&tournamentid=1&deckcode=dc1,dc2,dc3')
 
             .expect(200)
             .end(function (err, res) {
