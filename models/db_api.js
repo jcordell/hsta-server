@@ -212,26 +212,28 @@ exports.add_tournament_deck = function(userid, tournamentid, deckcode, banned, d
             console.log("Error deleting decks from tournament");
             console.log(err.message);
             return done(err);
+        } else {
+            var counter = 0;
+            forEach(deckcode, function (deckcodes) {
+                var status;
+                db.get().query('INSERT INTO decksintournament (deckcode, userid, tournamentid, banned) VALUES (?,?,?,?)', [deckcodes, userid, tournamentid, banned], function(err, result){
+                    if (err){
+                        console.log("error inserting into decksintourmanet");
+                        console.log(err.message);
+                        return done(err);
+                    }
+                    else {
+                        counter++;
+                        status.push(result);
+                        if (counter === deckcode.length)
+                            done(null, result);
+                    }
+                })
+
+            })
         }
     });
-    var counter = 0;
-    forEach(deckcode, function (deckcodes) {
-        var status;
-        db.get().query('INSERT INTO decksintournament (deckcode, userid, tournamentid, banned) VALUES (?,?,?,?)', [deckcodes, userid, tournamentid, banned], function(err, result){
-            if (err){
-                console.log("error inserting into decksintourmanet");
-                console.log(err.message);
-                return done(err);
-            }
-            else {
-                counter++;
-                status.push(result);
-                if (counter === deckcode.length)
-                    done(null, result);
-            }
-        })
 
-    })
 
 };
 
