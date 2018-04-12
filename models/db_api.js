@@ -129,17 +129,18 @@ exports.join_tournament = function(userid, tournamentid, done) {
     })
 };
 
-exports.create_match= function(homeTeamId, awayTeamId, winningTeamId, isValid, done)
+exports.create_match= function(homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, done)
 {
-    var values= [homeTeamId, awayTeamId, winningTeamId, isValid];
+    var values= [homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid];
 
-    db.get().query('INSERT INTO matches (homeTeamId, awayTeamId, winningTeamId, isValid) VALUES (?,?,?,?)', values, function(err, result)
+    db.get().query('INSERT INTO matches (homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid) VALUES (?,?,?,?,?)', values, function(err, result)
     {
         if(err)
         {
             return done(err);
         }
 
+        console.log(JSON.stringify(result));
         done(null, result.insertId)
     })
 };
