@@ -26,11 +26,20 @@ var con;
 
 if(isCreated===1)
 {
-    con = mysql.createConnection(process.env.JAWSDB_URL);
+    con = mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "Badgers1!",
+        database: "hsdb"
+    });
 }
 else
 {
-    con = mysql.createConnection(process.env.JAWSDB_URL);
+    con = mysql.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "Badgers1!"
+    });
 
     isCreated= 1;
 }
@@ -47,32 +56,27 @@ function createDB() {
 }
 
 var cmds = [
-    "DROP TABLE IF EXISTS playsInTournament",
     "DROP TABLE IF EXISTS decksInTournament",
     "DROP TABLE IF EXISTS matches",
+    "DROP TABLE IF EXISTS playsInTournament",
     "DROP TABLE IF EXISTS tournament",
-    "DROP TABLE IF EXISTS card",
-    "DROP TABLE IF EXISTS has",
     "DROP TABLE IF EXISTS ownedBy",
+    "DROP TABLE IF EXISTS card",
     "DROP TABLE IF EXISTS user",
-
-
     "CREATE TABLE IF NOT EXISTS card (name VARCHAR(255), class VARCHAR(255), id VARCHAR(255), PRIMARY KEY (id)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS user (userid INT NOT NULL AUTO_INCREMENT, battletag VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (userid)) ENGINE=InnoDB",
-    "CREATE TABLE IF NOT EXISTS ownedBy " +
-    "(deckname VARCHAR(255) NOT NULL, " +
-    "userid INT NOT NULL, " +
-    "deckcode VARCHAR(255) NOT NULL, " +
-    "PRIMARY KEY (userid, deckcode), " +
-    "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB",
 
-    "CREATE TABLE IF NOT EXISTS tournament (tournamentid INT NOT NULL AUTO_INCREMENT, " +
-    "name VARCHAR(255)," +
-    "numDecks INT unsigned, " +
-    "userid INT NOT NULL, " +
-    "PRIMARY KEY (tournamentid)," +
-    "FOREIGN KEY(userid) REFERENCES user(userid) ON DELETE CASCADE) ENGINE=InnoDB",
+    "CREATE TABLE IF NOT EXISTS ownedBy " +
+        "(deckname VARCHAR(255) NOT NULL, " +
+        "userid INT NOT NULL, " +
+        "deckcode VARCHAR(255) NOT NULL, " +
+        "PRIMARY KEY (userid, deckcode), " +
+        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB",
+
+    "CREATE TABLE IF NOT EXISTS tournament (tournamentid INT NOT NULL AUTO_INCREMENT, name VARCHAR(255)," +
+    "numDecks INT unsigned, userid INT NOT NULL, FOREIGN KEY (userid) REFERENCES user (userid), " +
+    "PRIMARY KEY (tournamentid)) ENGINE=InnoDB",
 
     "CREATE TABLE IF NOT EXISTS playsInTournament (tournamentid INT NOT NULL, userid INT NOT NULL," +
     "PRIMARY KEY (tournamentid, userid)," +

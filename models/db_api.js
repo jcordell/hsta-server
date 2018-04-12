@@ -24,6 +24,32 @@ exports.get_user_decklists = function(userId, done) {
     })
 };
 
+exports.get_user_tournament_decklists = function(userId, tournamentId, done) {
+
+    // get the deckcode and deckname of tournaments in deck
+    db.get().query("SELECT deckname, deckcode FROM ownedBy WHERE deckcode IN " +
+                        "(SELECT deckcode FROM decksInTournament WHERE userid = ? AND tournamentid = ?)",
+                        [userId, tournamentId], function (err, rows) {
+        if (err) {
+            console.log('error in query');
+            console.log(err.message);
+            return done(err);
+        }
+        done(null, rows)
+    })
+};
+
+exports.get_user_tournament_matches = function(userId, tournamentId, done) {
+    db.get().query("SELECT COUNT (*) FROM matches WHERE tournamentid = ? AND (homeTeamId = ? or awayTeamId = ?)",
+            [tournamentId, userId], function(err, count) {
+        if(err) {
+            console.log(err.message);
+            return done(err);
+        }
+        done(null, count);
+        })
+}
+
 exports.add_deck = function(userid, deckcode, deckname, done) {
     var values = [userid, deckcode, deckname];
     db.get().query('INSERT INTO ownedBy (userid, deckcode, deckname) VALUES(?,?,?)', values, function(err, result) {

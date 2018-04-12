@@ -262,6 +262,30 @@ router.get('/join_tournament', function(req, res) {
     var userid = req.query.userid;
     var tournamentid = req.query.tournamentid;
 
+    db_api.get_user_tournament_decklists(userid, tournamentid, function(err, data) {
+        if (err) {
+            console.log(err.message);
+            res.send(JSON.stringify({ success : false, err : err.message}));
+        }
+
+        parse_deck_info(data, function(json_data) {
+           // only need to check if matches played if decks are submitted
+            if (data.length > 0) {
+                db_api.get_user_tournament_matches(userid, tournamentid, function(err, count) {
+                    if (err) {
+                        console.log(err.message);
+                        res.send(JSON.stringify({ success : false, err : err.message}));
+                    }
+                })
+            } else {
+                res.send(json_data);
+            }
+
+        });
+        console.log(data);
+        res.send(data);
+    });
+/*
     db_api.join_tournament(userid, tournamentid, function(err, numDecks) {
         if(err) {
             console.log(err.message);
@@ -270,6 +294,7 @@ router.get('/join_tournament', function(req, res) {
             res.send(JSON.stringify({success: true, numDecks: numDecks}));
         }
     })
+    */
 });
 
 /*return: { 'success' : true/false, 'error' : none/error_code }*/
