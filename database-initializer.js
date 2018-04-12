@@ -26,20 +26,11 @@ var con;
 
 if(isCreated===1)
 {
-    con = mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "Badgers1!",
-        database: "hsdb"
-    });
+    con = mysql.createConnection(process.env.JAWSDB_URL);
 }
 else
 {
-    con = mysql.createConnection({
-        host: "localhost",
-        user: "root",
-        password: "Badgers1!"
-    });
+    con = mysql.createConnection(process.env.JAWSDB_URL);
 
     isCreated= 1;
 }
