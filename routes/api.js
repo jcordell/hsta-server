@@ -358,7 +358,7 @@ router.get('/get_match', function(req, res)
 return: tournament jsons owned by a userid
  */
 router.get('/get_tournaments', function(req, res){
-    var userid = req.query.userid;
+    var userid = req.quert.userid;
     db_api.get_tournaments(userid, function(err, status){
         if(err){
             console.log(JSON.stringify(status));
@@ -366,46 +366,11 @@ router.get('/get_tournaments', function(req, res){
         }
         else{
             console.log(JSON.stringify(status));
-            res.send(status);
+            res.send(status)
         }
 
     })
-});
-
-router.get('/add_tournament_deck', function(req, res){
-    var userid = req.query.userid;
-    var tournamentid = req.query.tournamentid;
-    var deckcode = req.query.deckcode.split(",");
-    var banned = req.query.banned;
-    db_api.add_tournament_deck(userid, tournamentid, deckcode, function(err, status){
-        if (err){
-            console.log("error db_api adding tournament deck");
-            console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: false, error: err.message}));
-        }
-        else{
-            console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: true}));
-        }
-    })
-});
-
-router.get('/ban_tournament_deck', function(req, res){
-    var userid = req.query.userid;
-    var tournamentid = req.query.tournamentid;
-    var deckcode = req.query.deckcode;
-    db_api.ban_tournament_deck(userid, tournamentid, deckcode, function(err, status){
-        if(err){
-            console.log("error db_api banning deck");
-            console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: false, error: err.message}));
-        }
-        else {
-            console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: true}));
-        }
-    })
-});
+})
 
 /* input: params: matchid, winnerid
  * return: { 'success' : true/false, 'error' : none/error_code }*/
