@@ -30,9 +30,7 @@ var parse_deck_info = function (data, done) {
             decoded_deckstring = {};
         }
 
-        decoded_deckstring['deckname'] = data[i].deckname;
-        decoded_deckstring['deckcode'] = data[i].deckcode;
-        deck_info.push([decoded_deckstring]);
+        deck_info.push(data[i].deckcode);
         deck_names.push(data[i].deckname);
     }
     done({success : true, decks: deck_info, deck_names : deck_names})
@@ -276,6 +274,7 @@ router.get('/join_tournament', function(req, res) {
             } else {
                 parse_deck_info(data, function(json_data) {
                     json_data['numDecks'] = numDecks;
+                    json_data['matches_played'] = false;
 
                     // only need to check if matches played if decks are submitted
                     if (data.length > 0) {
@@ -286,8 +285,6 @@ router.get('/join_tournament', function(req, res) {
                             } else {
                                 if (count[0]['COUNT(*)'] > 0) {
                                     json_data['matches_played'] = true;
-                                } else {
-                                    json_data['matches_played'] = false;
                                 }
                                 res.send(json_data);
                             }
