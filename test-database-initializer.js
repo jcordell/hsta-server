@@ -110,9 +110,6 @@ con.connect(function(err) {
 
     try {
         createDB();
-        con.query("set foreign_key_checks=0", function(err, result){
-            if (err) throw err;
-        });
         console.log("hsdb_test sucessfully created!"); //DEBUG
     }
     catch (ER_DB_CREATE_EXISTS) {

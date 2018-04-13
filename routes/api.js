@@ -376,8 +376,9 @@ router.get('/delete_match', function (req, res)
 router.get('/get_match', function(req, res)
 {
     var matchid = req.query.matchid;
+    var userid= req.query.userid;
 
-    db_api.get_match(matchid, function(err, status)
+    db_api.get_match(matchid, userid, function(err, status)
     {
         if(err)
         {
@@ -389,6 +390,7 @@ router.get('/get_match', function(req, res)
             console.log(JSON.stringify(status));
             res.send(JSON.stringify({success: true}));
         }
+
     })
 });
 /* input: params: userid
@@ -417,7 +419,7 @@ router.get('/get_tournaments', function(req, res){
 
         }
     })
-})
+});
 
 /*
 * input: userid, tournamentid, deckcode;
