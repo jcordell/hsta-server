@@ -82,7 +82,7 @@ var cmds = [
     "CREATE TABLE IF NOT EXISTS decksInTournament " +
         "(deckcode VARCHAR(255) NOT NULL, userid INT NOT NULL, tournamentid INT NOT NULL, banned INT NOT NULL, " +
         "PRIMARY KEY (userid, tournamentid), " +
-        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE, " +
+        "FOREIGN KEY (userid) REFERENCES ownedBy (userid) ON DELETE CASCADE, " +
         "FOREIGN KEY (deckcode) REFERENCES ownedBy (deckcode) ON DELETE CASCADE, " +
         "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB"
 ]

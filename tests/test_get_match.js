@@ -33,7 +33,7 @@ describe('Test get_match() functionality', function() {
                 console.log("Error creating match");
                 done(err.message);
             }
-            db_api.get_match(result, function(err, data)
+            db_api.get_match(result, 34, function(err, data)
             {
                 if(err)
                 {
@@ -41,17 +41,17 @@ describe('Test get_match() functionality', function() {
                     done(err.message);
                 }
                 else {
-                    if ((data[0].matchid === result) && (data[0].homeTeamId === 12) &&
-                        (data[0].awayTeamId === 34) && (data[0].winningTeamId === 12)
-                        && (data[0].isValid === 1))
-                    {
-                        delId= result; // dave id to delete entry after test
 
+                  if((data[0] === result) && (data[1] === 12) &&
+                      (data[2] === 34) && (data[3] === 12) && (data[4] === 1)
+                      && (data[5] === 1) && (data[8] == 12))
+                    {
                         console.log(JSON.stringify(data)); //DEBUG
                         done();
 
                     }
                 }
+
             });
 
         });

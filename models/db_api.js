@@ -213,17 +213,70 @@ exports.delete_match = function(matchid, done)
 };
 
 
-exports.get_match= function(matchid, done)
+exports.get_match= function(matchid, userid, done)
 {
-    //TODO: figure out what needs to be returned, add isValid to 'where' clause?
-    db.get().query('SELECT * FROM matches WHERE matchid = ?', matchid, function(err, result)
+    //TODO: return decks (of opponent or both)
+    //TODO: return opponentid, deckname, deckcodes
+    var my_id= userid;
+
+    db.get().query('SELECT * FROM matches WHERE matchid = ?', matchid, function(err, match_info)
     {
       if(err)
       {
           console.log(err.message);
           return done(err);
       }
-      done(null, result);
+      else
+      {
+
+          //console.log(result[0].homeTeamId);
+          var opp_id;
+          if(my_id === match_info[0].homeTeamId)
+          {
+              opp_id = match_info[0].awayTeamId;
+          }
+          else if(my_id === match_info[0].awayTeamId)
+          {
+              opp_id= match_info[0].homeTeamId;
+          }
+          else
+          {
+              console.log('user is not a part of this match: return nothing');
+              done(null, 'invalid match request');
+          }
+
+
+          db.get().query('SELECT deckname, deckcode FROM ownedBy WHERE userid = ?', opp_id, function(err, deck_info)
+          {
+              if(err)
+              {
+                  console.log(err.message);
+                  return done(err);
+              }
+              else
+              {
+             //     console.log(match_info);
+             //     console.log(deck_info);
+             //     console.log(opp_id);
+
+                  //console.log(match_info[0]);
+                  var final= [match_info[0].matchid, match_info[0].homeTeamId, match_info[0].awayTeamId,
+                      match_info[0].winningTeamId, match_info[0].tournamentid, match_info[0].isValid,
+                      deck_info[0].deckname, deck_info[0].deckcode, opp_id];
+
+                  done(null, final);
+
+              }
+          });
+
+
+
+
+
+
+
+
+      }
     })
 
 };
