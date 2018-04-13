@@ -1,0 +1,14 @@
+[
+  {
+    "tournamentid": 111,
+    "userid": 4
+  },
+  {
+      "tournamentid": 222,
+      "userid": 5
+  },
+  {
+     "tournamentid": 333,
+     "userid": 6
+  },
+]
