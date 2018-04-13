@@ -422,7 +422,7 @@ router.get('/get_tournaments', function(req, res){
 /*
 * input: userid, tournamentid, deckcode;
 * returns: void
-
+*/
 router.get('/add_tournament_deck', function(req, res){
     var userid = req.query.userid;
     var tournamentid = req.query.tournamentid;
@@ -435,7 +435,7 @@ router.get('/add_tournament_deck', function(req, res){
         }
         else{
             console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: true, status}));
+            res.send(JSON.stringify({success: true}));
         }
     })
 });
