@@ -4,9 +4,6 @@ var fs = require('fs');
 var cardJSON = 'json_data/card-data.json';
 var userJSON = 'json_data/user-data.json';
 var ownedJSON = 'json_data/ownedBy-data.json';
-var ditJSON = 'json_data/decksintournament.json';
-var pitJSON = 'json_data/playsit.json';
-var tournamentJSON = 'json_data/tournament.json';
 var isCreated=0;
 var index = 0;
 
@@ -17,9 +14,6 @@ var cardID = [];
 var cardName = [];
 var cardClass = [];
 var deckCode = [];
-var dit = [];
-var pit = [];
-var tournament = [];
 
 
 
@@ -78,35 +72,35 @@ var cmds = [
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS user (userid INT NOT NULL AUTO_INCREMENT, battletag VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (userid)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS ownedBy " +
-        "(deckname VARCHAR(255) NOT NULL, " +
-        "userid INT NOT NULL, " +
-        "deckcode VARCHAR(255) NOT NULL, " +
-        "PRIMARY KEY (userid, deckcode), " +
-        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB",
+    "(deckname VARCHAR(255) NOT NULL, " +
+    "userid INT NOT NULL, " +
+    "deckcode VARCHAR(255) NOT NULL, " +
+    "PRIMARY KEY (userid, deckcode), " +
+    "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB",
 
     "CREATE TABLE IF NOT EXISTS tournament (tournamentid INT NOT NULL AUTO_INCREMENT, " +
-        "name VARCHAR(255)," +
-        "numDecks INT unsigned, " +
-        "userid INT NOT NULL, " +
-        "PRIMARY KEY (tournamentid)," +
-        "FOREIGN KEY(userid) REFERENCES user(userid) ON DELETE CASCADE) ENGINE=InnoDB",
+    "name VARCHAR(255)," +
+    "numDecks INT unsigned, " +
+    "userid INT NOT NULL, " +
+    "PRIMARY KEY (tournamentid)," +
+    "FOREIGN KEY(userid) REFERENCES user(userid) ON DELETE CASCADE) ENGINE=InnoDB",
 
     "CREATE TABLE IF NOT EXISTS playsInTournament (tournamentid INT NOT NULL, userid INT NOT NULL," +
-        "PRIMARY KEY (tournamentid, userid)," +
-        "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE," +
-        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE=InnoDB",
+    "PRIMARY KEY (tournamentid, userid)," +
+    "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE," +
+    "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE=InnoDB",
 
     "CREATE TABLE IF NOT EXISTS matches " +
-        "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, tournamentid INT NOT NULL, " +
-        "isValid INT, " +
-        "PRIMARY KEY (matchid), " +
-        "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB",
+    "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, tournamentid INT NOT NULL, " +
+    "isValid INT, " +
+    "PRIMARY KEY (matchid), " +
+    "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB",
 
     "CREATE TABLE IF NOT EXISTS decksInTournament " +
-        "(deckcode VARCHAR(255) NOT NULL, userid INT NOT NULL, tournamentid INT NOT NULL, banned INT NOT NULL, " +
-        "PRIMARY KEY (userid, tournamentid, deckcode), " +
-        "FOREIGN KEY (userid, deckcode) REFERENCES ownedBy (userid, deckcode), " +
-        "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid)) ENGINE=InnoDB"
+    "(deckcode VARCHAR(255) NOT NULL, userid INT NOT NULL, tournamentid INT NOT NULL, banned INT NOT NULL, " +
+    "PRIMARY KEY (userid, tournamentid, deckcode), " +
+    "FOREIGN KEY (userid, deckcode) REFERENCES ownedBy (userid, deckcode), " +
+    "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid)) ENGINE=InnoDB"
 ]
 
 
@@ -116,13 +110,15 @@ con.connect(function(err) {
 
     try {
         createDB();
+        con.query("set foreign_key_checks=0", function(err, result){
+            if (err) throw err;
+        });
         console.log("hsdb_test sucessfully created!"); //DEBUG
     }
     catch (ER_DB_CREATE_EXISTS) {
         con.query("DROP DATABASE IF EXISTS hsdb_test");
         createDB();
-        con.query("SET FOREIGN_KEY_CHECKS=0;");
-    };
+    }
 
     // iterate over queries and execute them
     for (var i = 0; i < cmds.length; i++ ) {
@@ -135,9 +131,10 @@ con.connect(function(err) {
 
     //bulkloading JSON files into DB
     function populate(index) {
-        if (index === 0) {
+        if (index === 0)
+        {
 
-             fs.readFile(cardJSON, 'utf8', function (err, data) {
+            fs.readFile(cardJSON, 'utf8', function (err, data) {
                 if (err) throw err;
 
                 //JSON parse command
@@ -158,18 +155,14 @@ con.connect(function(err) {
                 con.query("INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function (err) {
                     if (err) throw err;
                 });
-
-                if (index === 0) {
+                console.log("Card table initialized");
+                if (index === 0)
                     populate(index + 1);
-                    console.log("Card table initialized");
-                }
 
             });
-        }
 
 
-        //initializes user table
-        if (index === 1) {
+            //initializes user table
             fs.readFile(userJSON, 'utf8', function (err, data) {
                 if (err) throw err;
                 var userOutput = [];
@@ -184,103 +177,16 @@ con.connect(function(err) {
                 con.query("INSERT INTO user (battletag) VALUES ?", [userOutput], function (err) {
                     if (err) throw err;
                 });
-
-            });
-            if (index === 1) {
                 console.log("User table initialized");
-                populate(index + 1)
-            }
-        }
-
-        if (index === 2) {
-            fs.readFile(tournamentJSON, 'utf8', function (err, data) {
-                if (err) throw err;
-                var userId = [];
-                var numDecks = [];
-                var name = [];
-                var tournId = [];
-                tournOutput = [];
-
-                data = JSON.parse(data);
-                for (i = 0; i < data.length; i++) {
-                    userId[i] = (data[i].userid);
-                    numDecks[i] = (data[i].numDecks);
-                    name[i] = (data[i].name);
-                    tournId[i] = (data[i].tournamentid);
-                    tournOutput.push([tournId[i], name[i], numDecks[i], userId[i]]);
-                }
-                con.query("INSERT INTO tournament (tournamentid, name, numDecks, userid) VALUES ?", [tournOutput], function (err) {
-                    if (err) throw err;
-                });
-
             });
-            if (index === 2) {
-                console.log("tournament table updated");
-                populate(index + 1);
-            }
-        }
-
-
-        if (index === 3) {
-            fs.readFile(ditJSON, 'utf8', function (err, data) {
-                if (err) throw err;
-                var deckcode = [];
-                var userid = [];
-                var tournamentid = [];
-                var banned = [];
-                ditOutput = [];
-
-                data = JSON.parse(data);
-                for (i = 0; i < data.length; i++) {
-                    deckcode[i] = (data[i].deckcode);
-                    userid[i] = (data[i].userid);
-                    tournamentid[i] = (data[i].tournamentid);
-                    banned[i] = (data[i].banned);
-                    ditOutput.push([deckcode[i], userid[i], tournamentid[i], banned[i]]);
-                }
-                con.query("INSERT INTO decksintournament (deckcode, userid, tournamentid, banned) VALUES ?", [ditOutput], function (err) {
-                    if (err) throw err;
-                });
-
-            });
-            if (index === 3) {
-                console.log("decksintournament table initialized");
-                populate(index + 1);
-            }
-        }
-
-
-        if (index === 4) {
-            fs.readFile(pitJSON, 'utf8', function (err, data) {
-                if (err) throw err;
-                var pitID = [];
-                var IDOutput = [];
-                var pitTourn = [];
-                var tournOutput = [];
-
-                data = JSON.parse(data)
-                for (i = 0; i < data.length; i++) {
-                    pitID[i] = (data[i].userid);
-                    IDOutput.push([pitID[i]]);
-                    pitTourn[i] = (data[i].tournamentid);
-                    tournOutput.push([pitTourn[i]]);
-                }
-                con.query("INSERT INTO playsintournament (tournamentid, userid) VALUES (?,?)", [tournOutput, IDOutput], function (err) {
-                    if (err) throw err;
-                });
-
-            });
-            if (index === 4) {
-                console.log("playsintournament table initialized");
-                populate(index + 1);
-            }
         }
 
 
         //initializes ownedby table
         //works when commented out, init is run and then uncomment, and run init again.
         //if you run init twice it stops working.
-        if (index === 5) {
+        if (index === 1)
+        {
             fs.readFile(ownedJSON, 'utf8', function (err, data) {
                 if (err) throw err;
                 var ownedOutput = [];
@@ -303,7 +209,6 @@ con.connect(function(err) {
                     }
                 });
                 console.log("Owned-by table initialized");
-                async function (x, y){
                 con.end();
                 return;
             });
