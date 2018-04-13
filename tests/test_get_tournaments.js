@@ -40,8 +40,15 @@ describe('Test get_tournaments() functionality', function() {
             .end(function (err, res) {
                 if (err)
                     done(new Error(err.message));
+
+                console.log("testing");
                 res.status.should.equal(200);
-                console.log("testing2");
+
+
+                // response should equal json string, weird commat formatting
+                res.text.should.equal('\{\"success\":true}');
+                done();
+            })
         });
                 /*db_api.get_tournaments(6, function(err, result) {
                     if (err){
@@ -58,6 +65,4 @@ describe('Test get_tournaments() functionality', function() {
                     obj.tournaments[0].matches.matchid.should.equal(1);
 
                 })*/
-            done();
-        });
 });

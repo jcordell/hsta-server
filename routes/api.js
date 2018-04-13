@@ -396,6 +396,16 @@ router.get('/get_match', function(req, res)
 });
 /* input: params: userid
 return: tournament jsons owned by a userid
+
+* {
+"tournamentname": rows.name,
+"matches": {
+    "matchid": match.matchid,
+    "player1": match.homeTeamId,
+    "player2": match.awayTeamId,
+    "winner": match.winningTeamId,
+    "isValid": match.isValid}
+                        });
  */
 router.get('/get_tournaments', function(req, res){
     var userid = req.query.userid;
@@ -405,11 +415,16 @@ router.get('/get_tournaments', function(req, res){
             res.send(JSON.stringify({success: false, error: err.message}));
         }
         else{
+            console.log(JSON.stringify(status));
             res.send(JSON.stringify({success: true}));
 
         }
     })
 })
+
+/*
+* input: userid, tournamentid, deckcode;
+* returns: void
 
 router.get('/add_tournament_deck', function(req, res){
     var userid = req.query.userid;
@@ -423,7 +438,7 @@ router.get('/add_tournament_deck', function(req, res){
         }
         else{
             console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: true}));
+            res.send(JSON.stringify({success: true, status}));
         }
     })
 });
