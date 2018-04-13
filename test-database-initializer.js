@@ -5,7 +5,7 @@ var cardJSON = 'json_data/card-data.json';
 var userJSON = 'json_data/user-data.json';
 var ownedJSON = 'json_data/ownedBy-data.json';
 var ditJSON = 'json_data/decksintournament.json';
-var pitJSON = 'json_data/playsintournament.json';
+var pitJSON = 'json_data/playsit.json';
 var tournamentJSON = 'json_data/tournament.json';
 var isCreated=0;
 var index = 0;
@@ -121,7 +121,8 @@ con.connect(function(err) {
     catch (ER_DB_CREATE_EXISTS) {
         con.query("DROP DATABASE IF EXISTS hsdb_test");
         createDB();
-    }
+        con.query("SET FOREIGN_KEY_CHECKS=0;");
+    };
 
     // iterate over queries and execute them
     for (var i = 0; i < cmds.length; i++ ) {
@@ -134,10 +135,9 @@ con.connect(function(err) {
 
     //bulkloading JSON files into DB
     function populate(index) {
-        if (index === 0)
-        {
+        if (index === 0) {
 
-            fs.readFile(cardJSON, 'utf8', function (err, data) {
+             fs.readFile(cardJSON, 'utf8', function (err, data) {
                 if (err) throw err;
 
                 //JSON parse command
@@ -158,32 +158,42 @@ con.connect(function(err) {
                 con.query("INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function (err) {
                     if (err) throw err;
                 });
-                console.log("Card table initialized");
-                if (index === 0)
+
+                if (index === 0) {
                     populate(index + 1);
+                    console.log("Card table initialized");
+                }
 
             });
+        }
 
 
         //initializes user table
-        fs.readFile(userJSON, 'utf8', function (err, data) {
-            if (err) throw err;
-            var userOutput = [];
-            var userbattletag = [];
-
-            data = JSON.parse(data);
-            for (i = 0; i < data.length; i++) {
-                userbattletag[i] = (data[i].battletag);
-
-                userOutput.push([userbattletag[i]]);
-            }
-            con.query("INSERT INTO user (battletag) VALUES ?", [userOutput], function (err) {
+        if (index === 1) {
+            fs.readFile(userJSON, 'utf8', function (err, data) {
                 if (err) throw err;
-            });
-            console.log("User table initialized");
-        });
+                var userOutput = [];
+                var userbattletag = [];
 
-            fs.readFile(tournamentJSON, 'utf8', function(err, data) {
+                data = JSON.parse(data);
+                for (i = 0; i < data.length; i++) {
+                    userbattletag[i] = (data[i].battletag);
+
+                    userOutput.push([userbattletag[i]]);
+                }
+                con.query("INSERT INTO user (battletag) VALUES ?", [userOutput], function (err) {
+                    if (err) throw err;
+                });
+
+            });
+            if (index === 1) {
+                console.log("User table initialized");
+                populate(index + 1)
+            }
+        }
+
+        if (index === 2) {
+            fs.readFile(tournamentJSON, 'utf8', function (err, data) {
                 if (err) throw err;
                 var userId = [];
                 var numDecks = [];
@@ -191,21 +201,28 @@ con.connect(function(err) {
                 var tournId = [];
                 tournOutput = [];
 
-                data =  JSON.parse(data);
+                data = JSON.parse(data);
                 for (i = 0; i < data.length; i++) {
                     userId[i] = (data[i].userid);
                     numDecks[i] = (data[i].numDecks);
                     name[i] = (data[i].name);
                     tournId[i] = (data[i].tournamentid);
-                    tournOutput.push([userId[i], numDecks[i], name[i], tournId[i]]);
+                    tournOutput.push([tournId[i], name[i], numDecks[i], userId[i]]);
                 }
                 con.query("INSERT INTO tournament (tournamentid, name, numDecks, userid) VALUES ?", [tournOutput], function (err) {
                     if (err) throw err;
                 });
 
             });
+            if (index === 2) {
+                console.log("tournament table updated");
+                populate(index + 1);
+            }
+        }
 
-            fs.readFile(ditJSON, 'utf8', function(err, data) {
+
+        if (index === 3) {
+            fs.readFile(ditJSON, 'utf8', function (err, data) {
                 if (err) throw err;
                 var deckcode = [];
                 var userid = [];
@@ -213,10 +230,10 @@ con.connect(function(err) {
                 var banned = [];
                 ditOutput = [];
 
-                data =  JSON.parse(data);
+                data = JSON.parse(data);
                 for (i = 0; i < data.length; i++) {
                     deckcode[i] = (data[i].deckcode);
-                    uiserid[i] = (data[i].userid);
+                    userid[i] = (data[i].userid);
                     tournamentid[i] = (data[i].tournamentid);
                     banned[i] = (data[i].banned);
                     ditOutput.push([deckcode[i], userid[i], tournamentid[i], banned[i]]);
@@ -226,35 +243,44 @@ con.connect(function(err) {
                 });
 
             });
-
-
-        fs.readFile(pitJSON, 'utf8', function(err, data) {
-            if (err) throw err;
-            var pitID = [];
-            var IDOutput = [];
-            var pitTourn = [];
-            var tournOutput = [];
-
-            data =  JSON.parse(data)
-            for (i = 0; i < data.length; i++) {
-                pitID[i] = (data[i].userid);
-                IDOutput.push([pitID[i]]);
-                pitTourn[i] = (data[i].tournamentid);
-                tournOutput.push([pitTourn[i]]);
+            if (index === 3) {
+                console.log("decksintournament table initialized");
+                populate(index + 1);
             }
-            con.query("INSERT INTO playsintournament (tournamentid, userid) VALUES (?,?)", [tournOutput, IDOutput], function (err) {
-                if (err) throw err;
-            });
+        }
 
-        });
-    }
+
+        if (index === 4) {
+            fs.readFile(pitJSON, 'utf8', function (err, data) {
+                if (err) throw err;
+                var pitID = [];
+                var IDOutput = [];
+                var pitTourn = [];
+                var tournOutput = [];
+
+                data = JSON.parse(data)
+                for (i = 0; i < data.length; i++) {
+                    pitID[i] = (data[i].userid);
+                    IDOutput.push([pitID[i]]);
+                    pitTourn[i] = (data[i].tournamentid);
+                    tournOutput.push([pitTourn[i]]);
+                }
+                con.query("INSERT INTO playsintournament (tournamentid, userid) VALUES (?,?)", [tournOutput, IDOutput], function (err) {
+                    if (err) throw err;
+                });
+
+            });
+            if (index === 4) {
+                console.log("playsintournament table initialized");
+                populate(index + 1);
+            }
+        }
 
 
         //initializes ownedby table
         //works when commented out, init is run and then uncomment, and run init again.
         //if you run init twice it stops working.
-        if (index === 1)
-        {
+        if (index === 5) {
             fs.readFile(ownedJSON, 'utf8', function (err, data) {
                 if (err) throw err;
                 var ownedOutput = [];
@@ -277,6 +303,7 @@ con.connect(function(err) {
                     }
                 });
                 console.log("Owned-by table initialized");
+                async function (x, y){
                 con.end();
                 return;
             });
