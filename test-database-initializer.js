@@ -72,35 +72,35 @@ var cmds = [
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS user (userid INT NOT NULL AUTO_INCREMENT, battletag VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (userid)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS ownedBy " +
-    "(deckname VARCHAR(255) NOT NULL, " +
-    "userid INT NOT NULL, " +
-    "deckcode VARCHAR(255) NOT NULL, " +
-    "PRIMARY KEY (userid, deckcode), " +
-    "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB",
+        "(deckname VARCHAR(255) NOT NULL, " +
+        "userid INT NOT NULL, " +
+        "deckcode VARCHAR(255) NOT NULL, " +
+        "PRIMARY KEY (userid, deckcode), " +
+        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE = InnoDB",
 
     "CREATE TABLE IF NOT EXISTS tournament (tournamentid INT NOT NULL AUTO_INCREMENT, " +
-    "name VARCHAR(255)," +
-    "numDecks INT unsigned, " +
-    "userid INT NOT NULL, " +
-    "PRIMARY KEY (tournamentid)," +
-    "FOREIGN KEY(userid) REFERENCES user(userid) ON DELETE CASCADE) ENGINE=InnoDB",
+        "name VARCHAR(255)," +
+        "numDecks INT unsigned, " +
+        "userid INT NOT NULL, " +
+        "PRIMARY KEY (tournamentid)," +
+        "FOREIGN KEY(userid) REFERENCES user(userid) ON DELETE CASCADE) ENGINE=InnoDB",
 
     "CREATE TABLE IF NOT EXISTS playsInTournament (tournamentid INT NOT NULL, userid INT NOT NULL," +
-    "PRIMARY KEY (tournamentid, userid)," +
-    "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE," +
-    "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE=InnoDB",
+        "PRIMARY KEY (tournamentid, userid)," +
+        "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE," +
+        "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE=InnoDB",
 
     "CREATE TABLE IF NOT EXISTS matches " +
-    "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, tournamentid INT NOT NULL, " +
-    "isValid INT, " +
-    "PRIMARY KEY (matchid), " +
-    "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB",
+        "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, tournamentid INT NOT NULL, " +
+        "isValid INT, " +
+        "PRIMARY KEY (matchid), " +
+        "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB",
 
     "CREATE TABLE IF NOT EXISTS decksInTournament " +
-    "(deckcode VARCHAR(255) NOT NULL, userid INT NOT NULL, tournamentid INT NOT NULL, banned INT NOT NULL, " +
-    "PRIMARY KEY (userid, tournamentid, deckcode), " +
-    "FOREIGN KEY (userid, deckcode) REFERENCES ownedBy (userid, deckcode), " +
-    "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid)) ENGINE=InnoDB"
+        "(deckcode VARCHAR(255) NOT NULL, userid INT NOT NULL, tournamentid INT NOT NULL, banned INT NOT NULL, " +
+        "PRIMARY KEY (userid, tournamentid, deckcode), " +
+        "FOREIGN KEY (userid, deckcode) REFERENCES ownedBy (userid, deckcode), " +
+        "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid)) ENGINE=InnoDB"
 ]
 
 
@@ -110,9 +110,6 @@ con.connect(function(err) {
 
     try {
         createDB();
-        con.query("set foreign_key_checks=0", function(err, result){
-            if (err) throw err;
-        });
         console.log("hsdb_test sucessfully created!"); //DEBUG
     }
     catch (ER_DB_CREATE_EXISTS) {
