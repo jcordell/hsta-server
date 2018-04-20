@@ -11,7 +11,7 @@ var state = {
     pool: null,
     mode: null,
 }
-
+/*
 exports.connect = function(mode, done) {
     if (mode == 'mode_test') {
         state.pool = mysql.createPool({
@@ -23,6 +23,20 @@ exports.connect = function(mode, done) {
     } else {
         state.pool = mysql.createPool(process.env.JAWSDB_URL);
     }
+
+    state.mode = mode
+    done()
+}
+*/
+
+//REMOVE BEFORE COMMIT
+exports.connect = function(mode, done) {
+    state.pool = mysql.createPool({
+        host: 'localhost',
+        user: 'root',
+        password: 'Badgers1!',
+        database: mode === exports.MODE_PRODUCTION ? PRODUCTION_DB : TEST_DB
+    })
 
     state.mode = mode
     done()

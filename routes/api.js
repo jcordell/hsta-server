@@ -335,8 +335,9 @@ router.get('/create_match', function(req, res)
     var winningTeamId= req.query.winningTeamId;
     var tournamentid= req.query.tournamentid;
     var isValid= req.query.isValid;
+    var matchDate= req.query.matchDate;
 
-    db_api.create_match(homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, function(err, matchid)
+    db_api.create_match(homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, matchDate, function(err, matchid)
     {
         if(err)
         {

@@ -271,11 +271,11 @@ exports.join_tournament = function(userid, tournamentid, done) {
 
 };
 
-exports.create_match= function(homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, done)
+exports.create_match= function(homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, matchDate, done)
 {
-    var values= [homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid];
+    var values= [homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, matchDate];
 
-    db.get().query('INSERT INTO matches (homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid) VALUES (?,?,?,?,?)', values, function(err, result)
+    db.get().query('INSERT INTO matches (homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, matchDate) VALUES (?,?,?,?,?,?)', values, function(err, result)
     {
         if(err)
         {
@@ -344,26 +344,19 @@ exports.get_match= function(matchid, userid, done)
               }
               else
               {
-             //     console.log(match_info);
-             //     console.log(deck_info);
-             //     console.log(opp_id);
+                  console.log(match_info);
+                  console.log(deck_info);
+                  console.log(opp_id);
 
                   //console.log(match_info[0]);
                   var final= [match_info[0].matchid, match_info[0].homeTeamId, match_info[0].awayTeamId,
                       match_info[0].winningTeamId, match_info[0].tournamentid, match_info[0].isValid,
-                      deck_info[0].deckname, deck_info[0].deckcode, opp_id];
+                      match_info[0].matchDate, deck_info[0].deckname, deck_info[0].deckcode, opp_id];
 
                   done(null, final);
 
               }
           });
-
-
-
-
-
-
-
 
       }
     })
