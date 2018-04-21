@@ -89,7 +89,7 @@ describe('Test get_match() functionality', function()
                 else {
                     if((data[0] === result) && (data[1] === 12) &&
                         (data[2] === 34) && (data[3] === 12) && (data[4] === 1)
-                        && (data[5] === 1) && (data[8] === 12))
+                        && (data[5] === 1) && (data[9] === 12))
                     {
                         console.log(JSON.stringify(data)); //DEBUG
                         done();

@@ -384,7 +384,7 @@ router.get('/get_match', function(req, res)
         if(err)
         {
             console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: false, error: err.message}));
+            res.send(JSON.stringify({success: false, error: err}));
         }
         else
         {

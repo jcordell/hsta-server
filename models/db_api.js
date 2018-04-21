@@ -307,7 +307,7 @@ exports.get_match= function(matchid, userid, done)
     //TODO: return decks (of opponent or both)
     //TODO: return opponentid, deckname, deckcodes
     var my_id= userid;
-
+/*
     db.get().query('SELECT * FROM matches WHERE matchid = ?', matchid, function(err, match_info)
     {
       if(err)
@@ -360,6 +360,73 @@ exports.get_match= function(matchid, userid, done)
 
       }
     })
+*/
+
+db.get().query('SELECT * FROM matches WHERE matchid = ?', matchid, function(err, match_info)
+{
+    if(err)
+    {
+        console.log(err.message);
+        done(err);
+    }
+    else
+    {
+        //DEBUG
+        console.log(JSON.stringify('tournamentid: ' + match_info[0].tournamentid));
+       // done(null, match_info);
+        var tid = match_info[0].tournamentid;
+
+/*
+        var opp_id;
+        if(my_id === match_info[0].homeTeamId)
+        {
+            opp_id = match_info[0].awayTeamId;
+        }
+        else if(my_id === match_info[0].awayTeamId)
+        {
+            opp_id= match_info[0].homeTeamId;
+        }
+        else
+        {
+            console.log('user is not a part of this match: return nothing');
+           // done(null, 'invalid match request');
+        }
+*/
+        //CHANGE 4 TO opp_id
+        var args= [tid, 4];
+
+        console.log("arg1:" +args[0] + "arg2:"+ args[1]);
+        db.get().query("SELECT deckcode FROM decksInTournament WHERE userid = ? AND tournamentid = ?", [4, tid], function (err, deck_info)
+            {
+                if (err) {
+                    console.log('error in query');
+                    console.log(err.message);
+                    return done(err);
+                }
+                console.log(JSON.stringify("deckinfo: " + deck_info[0].deckcode));
+                done(null, deck_info)
+            })
+        // console.log("oppid: "+ opp_id);
+       /* db.get().query('SELECT * FROM decksInTournament', function(err, deck_info)
+        {
+            if(err)
+            {
+                console.log(err.message);
+                done(err);
+            }
+            else
+            {
+                console.log(JSON.stringify(deck_info));
+                done(null, deck_info);
+            }
+        })*/
+
+
+    }
+
+
+
+})
 
 };
 
