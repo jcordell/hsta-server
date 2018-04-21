@@ -16,5 +16,11 @@
     "name": "tournament_333",
     "numDecks":3,
     "userid": 6
+  },
+  {
+    "tournamentid": 1,
+    "name": "tournament_0",
+    "numDecks":3,
+    "userid": 6
   }
 ]

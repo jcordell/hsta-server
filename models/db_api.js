@@ -150,6 +150,14 @@ exports.get_tournaments = function(userid, done){
             console.log(err.message);
             return done(err);
         }
+        if (rows.length === 0)
+        {
+            console.log("User is not in a tournament");
+            err = "User is not in a tournament";
+            return done(err);
+        }
+        console.log("ROWS IN DB_API")
+        console.log(rows)
 
        var thing = process(rows, function(err, something)
        {
