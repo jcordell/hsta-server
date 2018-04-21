@@ -415,8 +415,7 @@ router.get('/get_tournaments', function(req, res){
         }
         else{
             console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: true}));
-
+            res.send(JSON.stringify({success: true, data: status}));
         }
     })
 });
