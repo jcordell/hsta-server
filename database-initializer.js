@@ -26,25 +26,25 @@ var con;
 
 if(isCreated===1)
 {
-    //con = mysql.createConnection(process.env.JAWSDB_URL);
-       ///*
+    con = mysql.createConnection(process.env.JAWSDB_URL);
+       /*
         con = mysql.createConnection({
         host: "localhost",
         user: "root",
         password: "Badgers1!",
         database: "hsdb"
-    });//*/
+    });*/
 }
 else
 {
-    //con = mysql.createConnection(process.env.JAWSDB_URL);
-    ///*
+    con = mysql.createConnection(process.env.JAWSDB_URL);
+    /*
     con = mysql.createConnection({
         host: "localhost",
         user: "root",
         password: "Badgers1!"
     });
-    //*/
+    */
 
     isCreated= 1;
 }

@@ -61,6 +61,7 @@ function createDB() {
 }
 
 var cmds = [
+    "SET GLOBAL FOREIGN_KEY_CHECKS=0",
     "DROP TABLE IF EXISTS playsInTournament",
     "DROP TABLE IF EXISTS decksInTournament",
     "DROP TABLE IF EXISTS matches",
