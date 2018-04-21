@@ -61,7 +61,6 @@ function createDB() {
 }
 
 var cmds = [
-    "SET GLOBAL FOREIGN_KEY_CHECKS=0",
     "DROP TABLE IF EXISTS playsInTournament",
     "DROP TABLE IF EXISTS decksInTournament",
     "DROP TABLE IF EXISTS matches",
@@ -114,6 +113,9 @@ con.connect(function(err) {
 
     try {
         createDB();
+        con.query("set foreign_key_checks=0", function(err, result){
+            if (err) throw err;
+        });
         console.log("hsdb_test sucessfully created!"); //DEBUG
     }
     catch (ER_DB_CREATE_EXISTS) {
@@ -274,6 +276,9 @@ con.connect(function(err) {
                     }
                 });
                 console.log("Owned-by table initialized");
+                con.query("set foreign_key_checks=1", function(err, result){
+                    if (err) throw err;
+                });
                 con.end();
                 return;
             });
