@@ -1,0 +1,26 @@
+[
+  {
+    "tournamentid": 111,
+    "name": "tournament_111",
+    "numDecks":3,
+    "userid": 4
+  },
+  {
+    "tournamentid": 222,
+    "name": "tournament_222",
+    "numDecks":3,
+    "userid": 5
+  },
+  {
+    "tournamentid": 333,
+    "name": "tournament_333",
+    "numDecks":3,
+    "userid": 6
+  },
+  {
+    "tournamentid": 1,
+    "name": "tournament_0",
+    "numDecks":3,
+    "userid": 6
+  }
+]

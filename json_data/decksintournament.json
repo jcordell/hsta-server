@@ -1,0 +1,20 @@
+[
+  {
+  "deckcode": "dc1",
+  "userid": 4,
+  "tournamentid": 111,
+  "banned": 0
+  },
+  {
+    "deckcode": "dc1",
+    "userid": 5,
+    "tournamentid": 222,
+    "banned": 0
+  },
+  {
+    "deckcode": "dc1",
+    "userid": 6,
+    "tournamentid": 333,
+    "banned": 0
+  }
+]
