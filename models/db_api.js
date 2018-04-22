@@ -156,8 +156,6 @@ exports.get_tournaments = function(userid, done){
             err = "User is not in a tournament";
             return done(err);
         }
-        console.log("ROWS IN DB_API")
-        console.log(rows)
 
        var thing = process(rows, function(err, something)
        {
@@ -170,6 +168,7 @@ exports.get_tournaments = function(userid, done){
         function process(rows, cb) {
             var tInfo = '{"tournaments":[]}';
             async.forEach(rows, function (rows, callback) {
+                var counter = 0;
                 db.get().query("SELECT * FROM matches WHERE tournamentId = ?",
                     [rows.tournamentid], function (err2, matchRows)
                 {
@@ -178,12 +177,17 @@ exports.get_tournaments = function(userid, done){
                             console.log(err2.message);
                             return done(err)
                         }
+                    var obj = JSON.parse(tInfo);
+
+                    obj['tournaments'].push({
+                        "tournamentname": rows.name})
+                    tInfo = JSON.stringify(obj);
+
                     for (let match of matchRows)
                     {
                         var obj = JSON.parse(tInfo);
 
                         obj['tournaments'].push({
-                            "tournamentname": rows.name,
                             "matches": {
                                 "matchid": match.matchid,
                                 "player1": match.homeTeamId,
@@ -194,6 +198,7 @@ exports.get_tournaments = function(userid, done){
                         });
 
                         tInfo = JSON.stringify(obj);
+                        counter++;
                     }
                         callback(null, matchRows);
                     });

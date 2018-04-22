@@ -18,8 +18,14 @@ db.connect(db.MODE_TEST, function(err) {
     }
 });
 
+db_api.create_tournament("get_tournamenttest", 3, 11, function (err, result) {
+    if(err)
+        console.log("error creating tourmanettest")
+        done(err);
+
+});
 describe('Test get_tournaments() functionality', function() {
-    it('Test get_tournaments() for a user with one tournament', function(done)
+    it('Test get_tournaments() for a user with one tournament, one match', function(done)
     {
 
         /*server.get('/api/get_tournaments?userid=6')
@@ -30,7 +36,7 @@ describe('Test get_tournaments() functionality', function() {
                 res.status.should.equal(200);
                 console.log("testing2");
         });*/
-                db_api.get_tournaments(6, function(err, result) {
+                db_api.get_tournaments(11, function(err, result) {
                     if (err){
                         console.log("Error getting tournaments");
                         console.log(err);
@@ -42,7 +48,7 @@ describe('Test get_tournaments() functionality', function() {
                     console.log(obj);
                     console.log(obj.tournaments[0].matches);
                     obj.tournaments[0].tournamentname.should.equal('tournament_0');
-                    obj.tournaments[0].matches.matchid.should.equal(1);
+                    //obj.tournaments[0].matches.length.should.equal(1);
                     done();
                 });
 
@@ -58,5 +64,9 @@ describe('Test get_tournaments() functionality', function() {
             }
         })
     })
+    /*it ('Test get_tournaments() for a user with multiple tournaments', function(done)
+    {
+        db_api.get_tournaments()
+    })*/
 
 });
