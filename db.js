@@ -11,7 +11,7 @@ var state = {
     pool: null,
     mode: null,
 }
-/*
+
 exports.connect = function(mode, done) {
     if (mode == 'mode_test') {
         state.pool = mysql.createPool({
@@ -27,9 +27,10 @@ exports.connect = function(mode, done) {
     state.mode = mode
     done()
 }
-*/
 
-//REMOVE BEFORE COMMIT
+
+/*
+//REMOVE BEFORE COMMIT; CONNECTS TO LOCAL DB
 exports.connect = function(mode, done) {
     state.pool = mysql.createPool({
         host: 'localhost',
@@ -41,6 +42,7 @@ exports.connect = function(mode, done) {
     state.mode = mode
     done()
 }
+*/
 
 exports.get = function() {
     return state.pool

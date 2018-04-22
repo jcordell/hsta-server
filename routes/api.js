@@ -389,7 +389,7 @@ router.get('/get_match', function(req, res)
         else
         {
             console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: true}));
+            res.send(JSON.stringify({success: true, match: status}));
         }
 
     })
