@@ -307,6 +307,8 @@ exports.get_match= function(matchid, userid, done)
     //TODO: return decks (of opponent or both)
     //TODO: return opponentid, deckname, deckcodes
     var my_id= userid;
+    console.log('matchid: '+ matchid);
+    console.log('userid: '+ userid);
 /*
     db.get().query('SELECT * FROM matches WHERE matchid = ?', matchid, function(err, match_info)
     {
@@ -362,52 +364,8 @@ exports.get_match= function(matchid, userid, done)
     })
 */
 
-db.get().query('SELECT * FROM matches WHERE matchid = ?', matchid, function(err, match_info)
-{
-    if(err)
-    {
-        console.log(err.message);
-        done(err);
-    }
-    else
-    {
-        //DEBUG
-        console.log(JSON.stringify('tournamentid: ' + match_info[0].tournamentid));
-       // done(null, match_info);
-        var tid = match_info[0].tournamentid;
-
-/*
-        var opp_id;
-        if(my_id === match_info[0].homeTeamId)
-        {
-            opp_id = match_info[0].awayTeamId;
-        }
-        else if(my_id === match_info[0].awayTeamId)
-        {
-            opp_id= match_info[0].homeTeamId;
-        }
-        else
-        {
-            console.log('user is not a part of this match: return nothing');
-           // done(null, 'invalid match request');
-        }
-*/
-        //CHANGE 4 TO opp_id
-        var args= [tid, 4];
-
-        console.log("arg1:" +args[0] + "arg2:"+ args[1]);
-        db.get().query("SELECT deckcode FROM decksInTournament WHERE userid = ? AND tournamentid = ?", [4, tid], function (err, deck_info)
-            {
-                if (err) {
-                    console.log('error in query');
-                    console.log(err.message);
-                    return done(err);
-                }
-                console.log(JSON.stringify("deckinfo: " + deck_info[0].deckcode));
-                done(null, deck_info)
-            })
-        // console.log("oppid: "+ opp_id);
-       /* db.get().query('SELECT * FROM decksInTournament', function(err, deck_info)
+        //First, select all the match information (homeTeamId, awayTeamId, winningTeamId, isValid, matchDate, matchid)
+        db.get().query('SELECT * FROM matches WHERE matchid = ?', matchid, function(err, match_info)
         {
             if(err)
             {
@@ -416,17 +374,133 @@ db.get().query('SELECT * FROM matches WHERE matchid = ?', matchid, function(err,
             }
             else
             {
-                console.log(JSON.stringify(deck_info));
-                done(null, deck_info);
+                //DEBUG
+                console.log('tournamentid: ' + match_info[0].tournamentid);
+                console.log(JSON.stringify(match_info));
+
+                //save tournamentid
+                var tid = match_info[0].tournamentid;
+
+                //need to return opponents deckname and deckcode; finds out opponentid
+                var opp_id;
+                if(userid === match_info[0].homeTeamId)
+                {
+                    opp_id = match_info[0].awayTeamId;
+                }
+                else if(userid === match_info[0].awayTeamId)
+                {
+                    opp_id= match_info[0].homeTeamId;
+                }
+                else
+                {
+                    console.log('user is not a part of this match: return nothing');
+                    done(null, 'invalid match request');
+                }
+
+                //DEBUG
+                console.log("OPP_ID: " + opp_id);
+
+                //arguments to be passed into next query
+                var args= [opp_id, tid]; //// [10, 4] for testing purposes
+
+                //DEBUG
+                console.log("arg1:" +args[0] + "arg2:"+ args[1]);
+
+                //Now, select deckcode from decksInTournament to ensure valid decks being chosen
+                db.get().query("SELECT deckcode FROM decksInTournament WHERE userid = ? AND tournamentid = ?", args, function (err, deck_info)
+                {
+                        if (err)
+                        {
+                            console.log('error in query');
+                            console.log(err.message);
+                            return done(err);
+                        }
+                        else
+                        {
+                        console.log("deckinfo: " + deck_info[0].deckcode);
+                        var dc= deck_info[0].deckcode;
+                        var vals= [opp_id, dc];
+
+                        //Finally, select opponents deckcode and deckname
+                        db.get().query('SELECT deckcode, deckname FROM ownedBy WHERE userid = ? AND deckcode = ?', vals, function(err, dn_dc)
+                        {
+                            if (err) {
+                                console.log('err in SELECT deckcode, deckname query');
+                                return done(err);
+                                }
+                                else
+                                    {
+                                        //matchid, homeTeamId, awayTeamId, winningTeamId, tournamnetId, isValid, matchDate
+                                        //OPPONENT id, deckname, deckcode
+                                        console.log(JSON.stringify(dn_dc));
+                                        console.log('deckname: '+dn_dc[0].deckname);
+                                        console.log('deckcode: '+dn_dc[0].deckcode);
+
+                                        var final_info = new Object();
+                                        final_info.matchid = match_info[0].matchid;
+                                        final_info.homeTeamId = match_info[0].homeTeamId;
+                                        final_info.awayTeamId = match_info[0].awayTeamId;
+                                        final_info.winningTeamId= match_info[0].winningTeamId;
+                                        final_info.tournamentId = match_info[0].tournamentId;
+                                        final_info.isValid = match_info[0].isValid;
+                                        final_info.matchDate = match_info[0].matchDate;
+                                        final_info.deckname = dn_dc[0].deckname;
+                                        final_info.deckcode = dn_dc[0].deckcode;
+                                        final_info.opp_id = opp_id;
+
+                                      //var finalString= JSON.stringify(final_info);
+                                        console.log(final_info);
+
+                                        done(null, final_info);
+                                        }
+                        })
+                      }
+
+                })
+
             }
-        })*/
+
+})
 
 
+/* 'SELECT deckname, deckcode
+FROM ownedBy
+WHERE userid = ? AND deckcode IN
+    (SELECT deckcode
+    FROM decksInTournament
+    WHERE userid = ? AND tournamentid IN
+        (SELECT tournamentid
+        FROM matches
+        WHERE matchid = ?))'
+ */
+
+/* SINGLE QUERY STARTS HERE
+var values= [userid, userid, matchid];
+
+db.get().query('SELECT deckname, deckcode FROM ownedBy WHERE userid = ? AND deckcode IN ' +
+                    '(SELECT deckcode FROM decksInTournament WHERE userid = ? AND tournamentid IN ' +
+                        '(SELECT tournamentid FROM matches WHERE matchid = ?))', values, function(err, results)
+{
+
+    if(err)
+    {
+        console.log(err.message);
+        return done(err);
+    }
+    else
+    {
+        console.log(results);
+        done(null, results);
     }
 
 
 
+
 })
+*/
+
+
+
 
 };
 

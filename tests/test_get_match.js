@@ -26,10 +26,6 @@ db.connect(db.MODE_TEST, function(err) {
 
 var delId=0;
 
-//function dateString2Date(dateString) {
-//    var dateTime  = dateString.split(/\-|\s/);
- //   return new Date(dateTime.slice(0,3).reverse().join('-') + ' ' + dateTime[3]);
-//}
 
 describe('Test get_match() functionality', function()
 {
@@ -67,8 +63,16 @@ describe('Test get_match() functionality', function()
         });
 
     }) */
+
+    /*
     it('Test get_match() for single match', function(done)
     {
+        var values = ['dc1', 12, 1, 0];
+        //create user in order to create balid match for testing
+
+
+        //(name, numDecks, userid
+
         //Problem formatting date? --> e.g date = 2018-04-21T00:30:53.000Z --> get rid of T and Z
         var date= new Date().toISOString().slice(0, 19).replace('T', ' ');
 
@@ -94,6 +98,9 @@ describe('Test get_match() functionality', function()
                         console.log(JSON.stringify(data)); //DEBUG
                         done();
                     }
+                    else {
+                        done('get_matches failure, wrong return value')
+                    }
                 }
 
             });
@@ -101,5 +108,76 @@ describe('Test get_match() functionality', function()
         });
 
     })
+*/
 
+    it('Test get_match() for single match', function(done)
+    {
+        var values = ['dc1', 12, 1, 0];
+        //create a valid decksInTournament entry in order to test
+        db_api.create_tournament('test_tournament_100', 3, 10, function(err, tournId)
+        {
+            if(err)
+            {
+                console.log(err.message);
+                return done(err);
+            }
+            else
+            {
+                console.log('TOURNAMENTID: '+ tournId);
+
+                var vals= ['dc1', 10, 4, 0];
+                db.get().query('INSERT INTO decksInTournament (deckcode, userid, tournamentid, banned) VALUES(?,?,?,?)', vals, function(err, result)
+                {
+                    if(err)
+                    {
+                        console.log('error when inserting into decksInTournament');
+                        return done(err);
+                    }
+                    else
+                    {
+                        console.log('insert successful!');
+                    }
+                })
+            }
+        });
+
+
+        //Problem formatting date?
+        var date= new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+        db_api.create_match(10, 12, 10, 4, 1, date, function(err, result)
+        {
+            if(err)
+            {
+                console.log("Error creating match");
+                done(err.message);
+            }
+            db_api.get_match(result, 12, function(err, data)
+            {
+                if(err)
+                {
+                    console.log(JSON.stringify(data));
+                    done(err.message);
+                }
+                else {
+                    console.log("FINAL DATA BELOW: ");
+                    console.log(data);
+
+                    if((data.matchid === result) && (data.homeTeamId === 10) && (data.awayTeamId === 12)
+                        && (data.winningTeamId === 10) && (data.isValid === 1) && (data.opp_id === 10)
+                        &&(data.deckname==='test1') &&(data.deckcode === 'dc1'))
+                    {
+                        done();
+                    }
+                    else
+                    {
+                        done('get_matches failure, wrong return value')
+                    }
+                }
+
+            });
+
+        });
+
+    })
 });
