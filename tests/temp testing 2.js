@@ -13,8 +13,6 @@ db.connect(db.MODE_TEST, function(err) {
     }
 });
 
-
-
 get_tournaments = function(userid, done) {
     db.get().query("SELECT name, tournamentid FROM tournament WHERE userid = ?", [userid], function (err, rows) {
         if (err) {
@@ -30,9 +28,6 @@ get_tournaments = function(userid, done) {
 
         process(rows)
             .then(resolve => {
-                console.log("PROCESS TINFO PROCESS TINFO");
-                console.log(resolve);
-                return done(null, resolve);
             })
             .catch(error => {
                 console.log(error);
@@ -73,10 +68,6 @@ get_tournaments = function(userid, done) {
 
                                     for (let match of matchRows) {
                                         var obj = JSON.parse(tInfo);
-                                        console.log("TOURNAMENTS");
-                                        console.log(obj);
-                                        console.log(counter);
-
                                         obj['tournaments'][counter].matches.push({
                                             "matchid": match.matchid,
                                             "player1": match.homeTeamId,
@@ -85,42 +76,36 @@ get_tournaments = function(userid, done) {
                                             "isValid": match.isValid
                                         });
 
-
                                         tInfo = JSON.stringify(obj);
 
                                     }
                                     counter++;
                                     totalRows++;
-                                    if (totalRows === tournamentRows.length)
-                                        resolve(tInfo);
+                                    if (totalRows === tournamentRows.length) {
+                                        console.log("how long can this go on")
+                                        done(null, tInfo);
+                                    }
                                 })
                                 .catch((err) =>{
                                     console.log("error getting match rows");
                                     console.log(err);
                                 });
-
                     }
-
-                    resolve(tInfo);
                 }
             )
         }
     })
 }
 
-
-
 get_tournaments(6, function(err, result)
 {
     if (err) {
-        console.log("ERROR ERROR ERROR")
+        console.log("Error using get_tournaments");
         console.log(err);
     }
     else
     {
-        console.log("RESULT");
-        obj = JSON.stringify(result);
+        console.log("get tournament optput");
         console.log(result);
-        console.log(obj);
     }
 });

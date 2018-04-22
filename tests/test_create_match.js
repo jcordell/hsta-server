@@ -28,7 +28,7 @@ describe('Test create_match functionality', function() {
 
             // test create match passing in valid input
 
-            server.get('/api/create_match?homeTeamId=012&awayTeamId=345&winningTeamId=012&tournamentid=2&isValid=1')
+            server.get('/api/create_match?homeTeamId=012&awayTeamId=345&winningTeamId=012&tournamentid=123&isValid=1')
                 .expect(200)
                 .end(function (err, res) {
                     if (err)

@@ -18,12 +18,12 @@ db.connect(db.MODE_TEST, function(err) {
     }
 });
 
-db_api.create_tournament("get_tournamenttest", 3, 11, function (err, result) {
+/*db_api.create_tournament("get_tournamenttest", 3, 11, function (err, result) {
     if(err)
         console.log("error creating tourmanettest")
         done(err);
 
-});
+});*/
 describe('Test get_tournaments() functionality', function() {
     it('Test get_tournaments() for a user with one tournament, one match', function(done)
     {
@@ -47,8 +47,8 @@ describe('Test get_tournaments() functionality', function() {
                     console.log("debugging");
                     console.log(obj);
                     console.log(obj.tournaments[0].matches);
-                    obj.tournaments[0].tournamentname.should.equal('tournament_0');
-                    //obj.tournaments[0].matches.length.should.equal(1);
+                    obj.tournaments[0].tournamentname.should.equal('tournament user 11');
+                    obj.tournaments[0].matches.length.should.equal(1);
                     done();
                 });
 
