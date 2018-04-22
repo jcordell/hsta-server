@@ -309,6 +309,22 @@ router.get('/join_tournament', function(req, res) {
     */
 });
 
+router.get('/get_tournament_battletags', function(req, res) {
+    var tournamentid = req.query.tournamentid;
+    db_api.get_tournament_battletags(tournamentid, function(err, battletags) {
+        if (err) {
+            res.send(JSON.stringify({success : false, error : err.message}));
+        } else {
+
+            var tags = [];
+            for (var i = 0; i < battletags.length; i++) {
+                tags.push(battletags[i].battletag);
+            }
+            res.send(JSON.stringify({success : true, battletags : tags}))
+        }
+    })
+})
+
 /*return: { 'success' : true/false, 'error' : none/error_code }*/
 router.get('/create_tournament', function(req, res) {
     var name = req.query.name;

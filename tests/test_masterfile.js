@@ -26,3 +26,4 @@ require('../tests/test_update_match_result');
 require('../tests/test_add_tournament_deck');
 require('../tests/test_ban_tournament_deck');
 require('../tests/test_get_tournaments');
+require('../tests/test_get_tournament_battletags');

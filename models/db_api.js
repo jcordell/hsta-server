@@ -39,6 +39,17 @@ exports.get_user_tournament_decklists = function(userId, tournamentId, done) {
     })
 };
 
+exports.get_tournament_battletags = function(tournamentid, done) {
+    db.get().query("SELECT battletag FROM user WHERE userid IN (SELECT userid FROM playsInTournament WHERE tournamentid = ?)",
+                    [tournamentid], function (err, rows) {
+        if (err) {
+            console.log(err.message);
+            return done(err);
+        }
+            done(null, rows);
+        })
+}
+
 exports.get_user_tournament_matches_count = function(userId, tournamentId, done) {
     db.get().query("SELECT COUNT(*) FROM matches WHERE tournamentid = ? AND (homeTeamId = ? OR awayTeamId = ?)",
             [tournamentId, userId, userId], function(err, count) {
