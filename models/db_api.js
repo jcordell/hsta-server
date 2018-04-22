@@ -437,16 +437,16 @@ exports.get_match= function(matchid, userid, done)
                                         console.log('deckcode: '+dn_dc[0].deckcode);
 
                                         var final_info = new Object();
-                                        final_info.matchid = match_info[0].matchid;
+                                        final_info.matchId = match_info[0].matchid;
                                         final_info.homeTeamId = match_info[0].homeTeamId;
                                         final_info.awayTeamId = match_info[0].awayTeamId;
                                         final_info.winningTeamId= match_info[0].winningTeamId;
-                                        final_info.tournamentId = match_info[0].tournamentId;
+                                        final_info.tournamentId = match_info[0].tournamentid;
                                         final_info.isValid = match_info[0].isValid;
                                         final_info.matchDate = match_info[0].matchDate;
                                         final_info.deckname = dn_dc[0].deckname;
                                         final_info.deckcode = dn_dc[0].deckcode;
-                                        final_info.opp_id = opp_id;
+                                        final_info.oppId = opp_id;
 
                                       //var finalString= JSON.stringify(final_info);
                                         console.log(final_info);

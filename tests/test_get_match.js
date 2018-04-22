@@ -163,8 +163,8 @@ describe('Test get_match() functionality', function()
                     console.log("FINAL DATA BELOW: ");
                     console.log(data);
 
-                    if((data.matchid === result) && (data.homeTeamId === 10) && (data.awayTeamId === 12)
-                        && (data.winningTeamId === 10) && (data.isValid === 1) && (data.opp_id === 10)
+                    if((data.matchId === result) && (data.homeTeamId === 10) && (data.awayTeamId === 12)
+                        && (data.winningTeamId === 10) && (data.isValid === 1) && (data.oppId === 10)
                         &&(data.deckname==='test1') &&(data.deckcode === 'dc1'))
                     {
                         done();
