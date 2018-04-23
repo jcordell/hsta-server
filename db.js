@@ -28,6 +28,22 @@ exports.connect = function(mode, done) {
     done()
 }
 
+
+/*
+//REMOVE BEFORE COMMIT; CONNECTS TO LOCAL DB
+exports.connect = function(mode, done) {
+    state.pool = mysql.createPool({
+        host: 'localhost',
+        user: 'root',
+        password: 'Badgers1!',
+        database: mode === exports.MODE_PRODUCTION ? PRODUCTION_DB : TEST_DB
+    })
+
+    state.mode = mode
+    done()
+}
+*/
+
 exports.get = function() {
     return state.pool
 }
