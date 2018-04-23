@@ -383,7 +383,7 @@ exports.get_match= function(matchid, userid, done)
             else
             {
                 console.log('user is not a part of this match: return nothing');
-                done(null, 'invalid match request');
+                done('invalid match request');
             }
 
             //DEBUG
@@ -406,6 +406,9 @@ exports.get_match= function(matchid, userid, done)
                 }
                 else
                 {
+                    if (deck_info[0] == undefined) {
+                        done('no match found');
+                    }
                     console.log("deckinfo: " + deck_info[0].deckcode);
                     var dc= deck_info[0].deckcode;
                     var vals= [opp_id, dc];
