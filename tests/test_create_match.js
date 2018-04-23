@@ -36,7 +36,7 @@ describe('Test create_match functionality', function() {
 
                     res.status.should.equal(200);
 
-                    res.text.should.equal('\{\"success\":true,\"id\":1\}');
+                    res.text.should.equal('\{\"success\":true,\"id\":988\}');
                     done();
                 })
         });

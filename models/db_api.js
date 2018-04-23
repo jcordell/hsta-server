@@ -192,6 +192,7 @@ exports.get_tournaments = function(userid, done) {
 
                                 obj['tournaments'].push({
                                     "tournamentname": row.name,
+                                    "tournamentID": row.tournamentid,
                                     "matches": []
                                 });
                                 tInfo = JSON.stringify(obj);

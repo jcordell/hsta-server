@@ -64,9 +64,24 @@ describe('Test get_tournaments() functionality', function() {
             }
         })
     })
-    /*it ('Test get_tournaments() for a user with multiple tournaments', function(done)
+    it ('Test get_tournaments() for a user with multiple tournaments, multiple matches', function(done)
     {
-        db_api.get_tournaments()
-    })*/
+        db_api.get_tournaments(14, function(err, result) {
+                    if (err){
+                        console.log("Error getting tournaments");
+                        console.log(err);
+                        done(new Error(err.message));
+                    }
+                    console.log(result);
+                    var obj = JSON.parse(result);
+                    console.log("debugging");
+                    console.log(obj);
+                    console.log(obj.tournaments[0].matches);
+                    obj.tournaments[0].tournamentname.should.equal('tournament user 14');
+                    obj.tournaments[0].matches.length.should.equal(3);
+                    obj.tournaments[0].matches.length.should.equal(3);
+                    done();
+                });
+    })
 
 });

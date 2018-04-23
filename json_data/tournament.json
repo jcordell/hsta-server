@@ -28,5 +28,17 @@
     "name": "tournament user 11",
     "numDecks":3,
     "userid": 11
+  },
+  {
+    "tournamentid": 80,
+    "name": "tournament user 14 two",
+    "numDecks":3,
+    "userid": 14
+  },
+  {
+    "tournamentid": 50,
+    "name": "tournament user 14",
+    "numDecks":3,
+    "userid": 14
   }
 ]
