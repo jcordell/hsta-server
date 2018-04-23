@@ -335,11 +335,15 @@ exports.get_match= function(matchid, userid, done)
             if(err)
             {
                 console.log(err.message);
-                done(err);
+                done(err.message);
             }
             else
             {
                 //DEBUG
+                // if match not found, return err
+                if (match_info[0] == undefined) {
+                    done('no match info found')
+                }
                 console.log('tournamentid: ' + match_info[0].tournamentid);
                 console.log(JSON.stringify(match_info));
 
@@ -378,7 +382,7 @@ exports.get_match= function(matchid, userid, done)
                         {
                             console.log('error in query');
                             console.log(err.message);
-                            return done(err);
+                            return done(err.message);
                         }
                         else
                         {
