@@ -3,8 +3,12 @@ var router = express.Router();
 var app= require('../app');
 var db_api = require('../models/db_api');
 var deckstrings = require('deckstrings');
+var fs = require('fs');
+var cardJSON = './json_data/card-data.json';
 
 var Promise = require('es6-promise');
+
+var id_to_dbfid = {};
 
 decode = function(deckcode) {
     try {
@@ -97,9 +101,9 @@ router.get('/delete_deck', function(req, res) {
  */
 var convert_card_list_to_json = function (cardlist, done) {
     var card_json = {};
-
     for (var i = 0; i < cardlist.length; i ++) {
         card_json[cardlist[i][0]] = cardlist[i][1];
+        console.log(cardlist[i])
     }
     done(card_json);
 };
@@ -112,8 +116,9 @@ var compare_played_deckjson_to_saved_deckstring = function(saved_deckjson, playe
 
     // iterate over every played card id
     for (var cardid in played_deckjson) {
+        console.log(id_to_dbfid[cardid]);
         // played card should be in saveddeck have been played <= to num in saveddeck
-        if (cardid in saved_deckjson && saved_deckjson[cardid] >= played_deckjson[cardid]) {
+        if (id_to_dbfid[cardid] in saved_deckjson && saved_deckjson[id_to_dbfid[cardid]] >= played_deckjson[cardid]) {
         } else {
             return false;
         }
@@ -140,13 +145,13 @@ router.post('/validate_decklist', function(request, res) {
     var played_deckjson = request.body;
 
     // get users saved decklists
-    db_api.get_user_decklists(played_deckjson['userid'], function (err, deck_strings) {
+    db_api.get_user_tournament_decklists(played_deckjson['userid'], played_deckjson['tournamentid'], function (err, deck_strings) {
         if (err) {
             res.send(err.message);
         }
 
-        // assumes match is fair until mismatch is found
-        var fair_match = true;
+        // assumes match is not fair until mismatch is found
+        var fair_match = false;
 
         // don't want to return true if no decklist is found, so keep track of that
         var deck_match = false;
@@ -163,8 +168,8 @@ router.post('/validate_decklist', function(request, res) {
                 convert_card_list_to_json(saved_deckcode['cards'], function(saved_deckjson) {
 
                     // compare for fairness
-                    if (!compare_played_deckjson_to_saved_deckstring(saved_deckjson, played_deckjson['deckjson'])) {
-                        fair_match = false;
+                    if (compare_played_deckjson_to_saved_deckstring(saved_deckjson, played_deckjson['deckjson'])) {
+                        fair_match = true;
                     }
                 });
             }
@@ -481,8 +486,9 @@ router.get('/ban_tournament_deck', function(req, res){
 router.get('/update_match_result', function(req, res) {
     var matchid = req.query.matchid;
     var winnerid = req.query.winnerid;
+    var fair_match = req.query.fairmatch;
 
-    db_api.update_match_result(matchid, winnerid, function(err, status){
+    db_api.update_match_result(matchid, winnerid, fair_match, function(err, status){
         if (err) {
             console.log(JSON.stringify(status));
             res.send(JSON.stringify({success: false, error: err.message}));
@@ -493,6 +499,18 @@ router.get('/update_match_result', function(req, res) {
         }
 
     })
+});
+
+fs.readFile(cardJSON, 'utf8', function (err, data) {
+    if (err) throw err;
+
+    //JSON parse command
+    data = JSON.parse(data);
+    for (i = 0; i < data.length; i++) {
+
+        //pull info from JSON file
+        id_to_dbfid[data[i].id] = data[i].dbfId;
+    }
 });
 
 module.exports = router;

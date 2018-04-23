@@ -6,6 +6,7 @@ var userJSON = 'json_data/user-data.json';
 var ownedJSON = 'json_data/ownedBy-data.json';
 var ditJSON = 'json_data/decksintournament.json';
 var pitJSON = 'json_data/playsit.json';
+var matchJSON = 'json_data/match-data.json';
 var tournamentJSON = 'json_data/tournament.json';
 var isCreated=0;
 var index = 0;
@@ -71,7 +72,6 @@ var cmds = [
     "DROP TABLE IF EXISTS user",
 
 
-    "CREATE TABLE IF NOT EXISTS card (name VARCHAR(255), class VARCHAR(255), id VARCHAR(255), PRIMARY KEY (id)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS has (cardid VARCHAR(255), deckcode VARCHAR(255)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS user (userid INT NOT NULL AUTO_INCREMENT, battletag VARCHAR(255) NOT NULL UNIQUE, PRIMARY KEY (userid)) ENGINE=InnoDB",
     "CREATE TABLE IF NOT EXISTS ownedBy " +
@@ -153,10 +153,6 @@ con.connect(function(err) {
                     cardOutput.push([cardName[i], cardClass[i], cardID[i]]);
 
                 }
-                //inserts card data into DB
-                con.query("INSERT INTO card (name, class, id) VALUES ?", [cardOutput], function (err) {
-                    if (err) throw err;
-                });
                 console.log("Card table initialized");
                 if (index === 0)
                     populate(index + 1);
@@ -246,6 +242,42 @@ con.connect(function(err) {
                 });
                 console.log("playsintournament table initialized");
             });
+
+            fs.readFile(matchJSON, 'utf8', function(err, data){
+                if(err) throw err;
+                var matchID = [];
+                var homeID = [];
+                var awayID = [];
+                var winID = [];
+                var tournamentID = [];
+                var isVal = [];
+                var matchOutput = [];
+                data = JSON.parse(data);
+                function getmatches(){
+                    return new Promise(function(resolve){
+                        for(i = 0; i < data.length; i++){
+                            matchID[i] = (data[i].matchid);
+                            homeID[i] = (data[i].homeTeamId);
+                            awayID[i] = (data[i].awayTeamId);
+                            winID[i] = (data[i].winningTeamId);
+                            tournamentID[i] = (data[i].tournamentid);
+                            isVal[i] = (data[i].isValid);
+
+                            matchOutput.push([matchID[i],homeID[i],awayID[i],winID[i],tournamentID[i],isVal[i]]);
+
+                        }
+                        resolve(matchOutput);
+                    })
+                }
+                getmatches()
+                    .then(resolve => {
+                        con.query("INSERT INTO matches (matchid, homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid) VALUES ?", [resolve], function(err){
+                            if (err) throw err;
+                        });
+                        console.log("match table initialized")
+                    })
+
+            })
 
         }
 

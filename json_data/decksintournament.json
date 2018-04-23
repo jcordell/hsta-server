@@ -16,5 +16,18 @@
     "userid": 6,
     "tournamentid": 333,
     "banned": 0
+  },
+  {
+    "deckcode": "AAECAf0GBpME4KwCycICl9MCneIC2+kCDIoB9wS2B+EH3sQC58sC8tAC+NACiNICi+EC/OUC6OcCAA==",
+    "userid": 13,
+    "tournamentid": 333,
+    "banned": 0
+  },
+  {
+    "deckcode": "AAECAf0GBMnCApfTAtvpApz4Ag2KAfcEtgfECJvCAufLAvLQAvjQAojSAovhAvzlAujnArfxAgA=",
+    "userid": 13,
+    "tournamentid": 333,
+    "banned": 0
   }
+
 ]

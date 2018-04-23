@@ -32,7 +32,8 @@ describe('Add Deck Normal functionality', function() {
                     }
 
                     // if a single result, element added correctly
-                    if(result.length == 1) {
+                    if(result.length === 1) {
+                        console.log("test")
                         done();
                     } else {
                         done(new Error('No deck was added'));
@@ -42,5 +43,5 @@ describe('Add Deck Normal functionality', function() {
             }
         });
 
-    })
+    });
 });

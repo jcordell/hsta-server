@@ -27,7 +27,7 @@ describe('Test updating match result functionality', function()
     it('Test update_match_result for single row', function(done)
     {
         db.get().query('INSERT INTO matches (matchid, homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid) VALUES(66, 13, 31, 13, 1, 1)', function (err, result) {
-            db_api.update_match_result(66, 31, function (err, rows) {
+            db_api.update_match_result(66, 31, 0, function (err, rows) {
                 if (err) {
                     done(new Error('Error updating match results api'));
                 }

@@ -1,0 +1,58 @@
+[
+  {
+    "matchid": 123,
+    "homeTeamId": 4,
+    "awayTeamId": 6,
+    "winningTeamId": 10,
+    "tournamentid": 50,
+    "isValid": 1
+  },
+  {
+    "matchid": 124,
+    "homeTeamId": 4,
+    "awayTeamId": 6,
+    "winningTeamId": 10,
+    "tournamentid": 123,
+    "isValid": 1
+  },
+  {
+    "matchid": 445,
+    "homeTeamId": 4,
+    "awayTeamId": 6,
+    "winningTeamId": 10,
+    "tournamentid": 50,
+    "isValid": 1
+  },
+  {
+    "matchid": 234,
+    "homeTeamId": 4,
+    "awayTeamId": 6,
+    "winningTeamId": 10,
+    "tournamentid": 50,
+    "isValid": 1
+  },
+  {
+    "matchid": 532,
+    "homeTeamId": 4,
+    "awayTeamId": 6,
+    "winningTeamId": 10,
+    "tournamentid": 80,
+    "isValid": 1
+  },
+  {
+    "matchid": 481,
+    "homeTeamId": 4,
+    "awayTeamId": 6,
+    "winningTeamId": 10,
+    "tournamentid": 80,
+    "isValid": 1
+  },
+  {
+    "matchid": 987,
+    "homeTeamId": 4,
+    "awayTeamId": 6,
+    "winningTeamId": 10,
+    "tournamentid": 80,
+    "isValid": 1
+  }
+]
