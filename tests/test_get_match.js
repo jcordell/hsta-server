@@ -33,68 +33,27 @@ describe('Test get_match() functionality', function()
     {
         var values = ['dc1', 12, 1, 0];
         var tid=0;
-        //create a valid decksInTournament entry in order to test
-        db_api.create_tournament('test_tournament_100', 3, 10, function(err, tournId)
-        {
-            if(err)
-            {
-                console.log(err.message);
-                return done(err);
-            }
-            else
-            {
-                console.log('TOURNAMENTID: '+ tournId);
-                tid = tournId;
-                var vals= ['dc1', 10, tournId, 0];
-                db.get().query('INSERT INTO decksInTournament (deckcode, userid, tournamentid, banned) VALUES(?,?,?,?)', vals, function(err, result)
-                {
-                    if(err)
-                    {
-                        console.log('error when inserting into decksInTournament');
-                        return done(new Error(err.message));
-                    }
-                    else
-                    {
-                        console.log('insert successful!');
-
-                    }
-                })
-            }
-        });
-
 
         //Problem formatting date?
-        var date= new Date().toISOString().slice(0, 19).replace('T', ' ');
+        db_api.get_match(123, 4, function (err3, data) {
+            if (err3) {
+                console.log(JSON.stringify(data));
+                done(new Error('Error getting match...\n' + err3));
+            }
+            else {
+                console.log("FINAL DATA BELOW: ");
+                console.log(data);
 
-            db_api.create_match(10, 12, 10, 334, 1, date, function (err2, result) {
-                if (err2) {
-
-                    console.log("Error creating match, result:  " + result);
-                    return done(new Error(err2.message));
+                if ((data.matchId === 123) && (data.homeTeamId === 4) && (data.awayTeamId === 6)
+                    && (data.winningTeamId === 10) && (data.isValid === 1) && (data.oppId === 6)) {
+                    done();
                 }
-                db_api.get_match(result, 12, function (err3, data) {
-                    if (err3) {
-                        console.log(JSON.stringify(data));
-                        return done(new Error(err3.message));
-                    }
-                    else {
-                        console.log("FINAL DATA BELOW: ");
-                        console.log(data);
+                else {
+                    done(new Error('get_matches failure, wrong return value'));
+                }
+            }
 
-                        if ((data.matchId === result) && (data.homeTeamId === 10) && (data.awayTeamId === 12)
-                            && (data.winningTeamId === 10) && (data.isValid === 1) && (data.oppId === 10)
-                            && (data.deckname === 'test1') && (data.deckcode === 'dc1')) {
-                            done();
-                        }
-                        else {
-                            return done(new Error('get_matches failure, wrong return value'));
-                        }
-                    }
+        });
 
-                });
-
-            });
-
-
-    })
+    });
 });

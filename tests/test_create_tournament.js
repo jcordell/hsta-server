@@ -40,7 +40,7 @@ describe('request(app)', function() {
                     res.status.should.equal(200);
 
                     // response should equal json string, weird commat formatting
-                    res.text.should.equal('\{\"success\":true,\"id\":335\}');
+                    res.text.should.equal('\{\"success\":true,\"id\":334\}');
                     done();
                 })
         });
