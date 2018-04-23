@@ -36,9 +36,10 @@ describe('request(app)', function() {
             .expect(200)
             .send({
                 "userid": 13,
+                "tournamentid": 333,
                 "deckjson" : {
-                    "1": 1,
-                    "2" : 1
+                    "LOOT_017": 1,
+                    "LOOT_014" : 1
                 }
             })
             .end ( function(err, res) {
