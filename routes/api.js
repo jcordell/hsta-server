@@ -102,8 +102,8 @@ router.get('/delete_deck', function(req, res) {
 var convert_card_list_to_json = function (cardlist, done) {
     var card_json = {};
     for (var i = 0; i < cardlist.length; i ++) {
-        console.log(cardlist[i]);
         card_json[cardlist[i][0]] = cardlist[i][1];
+        console.log(cardlist[i])
     }
     done(card_json);
 };
@@ -116,6 +116,7 @@ var compare_played_deckjson_to_saved_deckstring = function(saved_deckjson, playe
 
     // iterate over every played card id
     for (var cardid in played_deckjson) {
+        console.log(id_to_dbfid[cardid]);
         // played card should be in saveddeck have been played <= to num in saveddeck
         if (id_to_dbfid[cardid] in saved_deckjson && saved_deckjson[id_to_dbfid[cardid]] >= played_deckjson[cardid]) {
         } else {
@@ -149,8 +150,8 @@ router.post('/validate_decklist', function(request, res) {
             res.send(err.message);
         }
 
-        // assumes match is fair until mismatch is found
-        var fair_match = true;
+        // assumes match is not fair until mismatch is found
+        var fair_match = false;
 
         // don't want to return true if no decklist is found, so keep track of that
         var deck_match = false;
@@ -167,8 +168,8 @@ router.post('/validate_decklist', function(request, res) {
                 convert_card_list_to_json(saved_deckcode['cards'], function(saved_deckjson) {
 
                     // compare for fairness
-                    if (!compare_played_deckjson_to_saved_deckstring(saved_deckjson, played_deckjson['deckjson'])) {
-                        fair_match = false;
+                    if (compare_played_deckjson_to_saved_deckstring(saved_deckjson, played_deckjson['deckjson'])) {
+                        fair_match = true;
                     }
                 });
             }

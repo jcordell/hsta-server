@@ -79,4 +79,29 @@ describe('request(app)', function() {
             })
     })
 
+    it('Deck info from Jake input test', function(done) {
+
+        server.post('/api/validate_decklist')
+            .expect(200)
+            .send({
+                "userid": 13,
+                "tournamentid": 333,
+                "deckjson" : {
+                    "LOOT_014": 1,
+                    "NEW1_021" : 1
+                }
+            })
+            .end ( function(err, res) {
+                if (err)
+                    done(new Error(err.message));
+
+                console.log(res.text);
+                res.status.should.equal(200);
+
+                // response should equal json string, weird commat formatting
+                res.text.should.equal('\{\"success\":true,\"fair_match\":true\}');
+                done();
+            })
+    })
+
 });
