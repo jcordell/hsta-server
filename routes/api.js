@@ -485,8 +485,9 @@ router.get('/ban_tournament_deck', function(req, res){
 router.get('/update_match_result', function(req, res) {
     var matchid = req.query.matchid;
     var winnerid = req.query.winnerid;
+    var fair_match = req.query.fairmatch;
 
-    db_api.update_match_result(matchid, winnerid, function(err, status){
+    db_api.update_match_result(matchid, winnerid, fair_match, function(err, status){
         if (err) {
             console.log(JSON.stringify(status));
             res.send(JSON.stringify({success: false, error: err.message}));

@@ -470,9 +470,9 @@ db.get().query('SELECT deckname, deckcode FROM ownedBy WHERE userid = ? AND deck
         'SET deckname = ? ' +
         'WHERE userid = ? AND deckcode = ?', [deckname, userid, deckcode], function(err, result){*/
 
-exports.update_match_result = function(matchid, winnerid, done){
-    db.get().query('UPDATE matches SET winningTeamId = ? ' +
-        'WHERE matchid = ?', [winnerid, matchid], function(err, result){
+exports.update_match_result = function(matchid, winnerid, fair_match, done){
+    db.get().query('UPDATE matches SET winningTeamId = ? AND isValid = ? ' +
+        'WHERE matchid = ?', [winnerid, fair_match, matchid], function(err, result){
         if (err){
             console.log(err.message);
             return done(err);
