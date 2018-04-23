@@ -79,10 +79,10 @@ var cmds = [
         "FOREIGN KEY (userid) REFERENCES user (userid) ON DELETE CASCADE) ENGINE=InnoDB",
 
     "CREATE TABLE IF NOT EXISTS matches " +
-        "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, tournamentid INT NOT NULL, " +
-        "isValid INT, " +
-        "PRIMARY KEY (matchid), " +
-        "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB",
+    "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, tournamentid INT NOT NULL, " +
+    "isValid INT, matchDate DATETIME, " +
+    "PRIMARY KEY (matchid), " +
+    "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB",
 
     "CREATE TABLE IF NOT EXISTS decksInTournament " +
         "(deckcode VARCHAR(255) NOT NULL, userid INT NOT NULL, tournamentid INT NOT NULL, banned INT NOT NULL, " +

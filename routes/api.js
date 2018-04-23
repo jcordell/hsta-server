@@ -351,8 +351,9 @@ router.get('/create_match', function(req, res)
     var winningTeamId= req.query.winningTeamId;
     var tournamentid= req.query.tournamentid;
     var isValid= req.query.isValid;
+    var matchDate= req.query.matchDate;
 
-    db_api.create_match(homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, function(err, matchid)
+    db_api.create_match(homeTeamId, awayTeamId, winningTeamId, tournamentid, isValid, matchDate, function(err, matchid)
     {
         if(err)
         {
@@ -399,16 +400,17 @@ router.get('/get_match', function(req, res)
         if(err)
         {
             console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: false, error: err.message}));
+            res.send(JSON.stringify({success: false, error: err}));
         }
         else
         {
             console.log(JSON.stringify(status));
-            res.send(JSON.stringify({success: true}));
+            res.send(JSON.stringify({success: true, match: status}));
         }
 
     })
 });
+
 /* input: params: userid
 return: tournament jsons owned by a userid
 

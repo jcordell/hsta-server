@@ -59,7 +59,7 @@ describe('Test get_tournaments() functionality', function() {
     });
     it ('Test get_tournaments() for a user with no tournaments', function(done)
     {
-        db_api.get_tournaments(10, function(err, result){
+        db_api.get_tournaments(1010, function(err, result){
             if (err){
                 console.log("Error getting tournaments");
                 err.should.equal("User is not in a tournament");

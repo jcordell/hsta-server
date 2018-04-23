@@ -95,7 +95,7 @@ var cmds = [
 
     "CREATE TABLE IF NOT EXISTS matches " +
     "(matchid INT NOT NULL AUTO_INCREMENT, homeTeamId INT, awayTeamId INT, winningTeamId INT, tournamentid INT NOT NULL, " +
-    "isValid INT, " +
+    "isValid INT, matchDate DATETIME, " +
     "PRIMARY KEY (matchid), " +
     "FOREIGN KEY (tournamentid) REFERENCES tournament (tournamentid) ON DELETE CASCADE) ENGINE=InnoDB",
 
