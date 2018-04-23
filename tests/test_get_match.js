@@ -26,46 +26,46 @@ db.connect(db.MODE_TEST, function(err) {
 
 var delId=0;
 
+var values = ['dc1', 12, 1, 0];
+var tid=0;
+//create a valid decksInTournament entry in order to test
+db_api.create_tournament('test_tournament_100', 3, 10, function(err, tournId)
+{
+    if(err)
+    {
+        console.log(err.message);
+        return done(err);
+    }
+    else
+    {
+        console.log('TOURNAMENTID - tournId: '+ tournId);
+        tid = tournId;
+        var vals= ['dc1', 10, 334, 0];
+        db.get().query('INSERT INTO decksInTournament (deckcode, userid, tournamentid, banned) VALUES(?,?,?,?)', vals, function(err, result)
+        {
+            if(err)
+            {
+                console.log('error when inserting into decksInTournament');
+                return done(new Error(err.message));
+            }
+            else
+            {
+                console.log('insert successful!');
+
+            }
+        })
+    }
+});
 
 describe('Test get_match() functionality', function()
 {
     it('Test get_match() for single match', function(done)
     {
-        var values = ['dc1', 12, 1, 0];
-        var tid=0;
-        //create a valid decksInTournament entry in order to test
-        db_api.create_tournament('test_tournament_100', 3, 10, function(err, tournId)
-        {
-            if(err)
-            {
-                console.log(err.message);
-                return done(err);
-            }
-            else
-            {
-                console.log('TOURNAMENTID: '+ tournId);
-                tid = tournId;
-                var vals= ['dc1', 10, tournId, 0];
-                db.get().query('INSERT INTO decksInTournament (deckcode, userid, tournamentid, banned) VALUES(?,?,?,?)', vals, function(err, result)
-                {
-                    if(err)
-                    {
-                        console.log('error when inserting into decksInTournament');
-                        return done(new Error(err.message));
-                    }
-                    else
-                    {
-                        console.log('insert successful!');
-
-                    }
-                })
-            }
-        });
-
 
         //Problem formatting date?
         var date= new Date().toISOString().slice(0, 19).replace('T', ' ');
 
+            console.log("tid: " + tid);
             db_api.create_match(10, 12, 10, 334, 1, date, function (err2, result) {
                 if (err2) {
 
