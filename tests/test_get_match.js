@@ -66,7 +66,7 @@ describe('Test get_match() functionality', function()
         var date= new Date().toISOString().slice(0, 19).replace('T', ' ');
 
             console.log("tid: " + tid);
-            db_api.create_match(10, 12, 10, 334, 1, date, function (err2, result) {
+            db_api.create_match(10, 12, 10, tid, 1, date, function (err2, result) {
                 if (err2) {
 
                     console.log("Error creating match, result:  " + result);
