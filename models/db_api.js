@@ -359,7 +359,7 @@ exports.get_match= function(matchid, userid, done)
         if(err)
         {
             console.log(err.message);
-            done(err);
+            return done(err);
         }
         else
         {
@@ -407,7 +407,7 @@ exports.get_match= function(matchid, userid, done)
                 else
                 {
                     if (deck_info[0] == undefined) {
-                        done('no match found');
+                        return done('no match found');
                     }
                     console.log("deckinfo: " + deck_info[0].deckcode);
                     var dc= deck_info[0].deckcode;
