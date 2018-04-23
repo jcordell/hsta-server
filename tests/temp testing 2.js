@@ -97,7 +97,7 @@ get_tournaments = function(userid, done) {
     })
 }
 
-get_tournaments(6, function(err, result)
+get_tournaments(11, function(err, result)
 {
     if (err) {
         console.log("Error using get_tournaments");
