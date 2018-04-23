@@ -154,63 +154,87 @@ var get_num_tournament_decks = function(tournamentid, done) {
 }
 
 
-exports.get_tournaments = function(userid, done){
-    db.get().query("SELECT name, tournamentid FROM tournament WHERE userid = ?", [userid], function(err, rows){
+exports.get_tournaments = function(userid, done) {
+    db.get().query("SELECT name, tournamentid FROM tournament WHERE userid = ?", [userid], function (err, rows) {
         if (err) {
             console.log('error in query');
             console.log(err.message);
             return done(err);
         }
-        if (rows.length === 0)
-        {
+        if (rows.length === 0) {
             console.log("User is not in a tournament");
             err = "User is not in a tournament";
             return done(err);
         }
-        console.log("ROWS IN DB_API")
-        console.log(rows)
 
-       var thing = process(rows, function(err, something)
-       {
-           if (err) {
-               console.log(err.message);
-               return done(err);
-           }
-           else return done(null, something);
-       });
-        function process(rows, cb) {
-            var tInfo = '{"tournaments":[]}';
-            async.forEach(rows, function (rows, callback) {
-                db.get().query("SELECT * FROM matches WHERE tournamentId = ?",
-                    [rows.tournamentid], function (err2, matchRows)
-                {
-                        if (err2) {
-                            console.log('error in getting matches');
-                            console.log(err2.message);
-                            return done(err)
-                        }
-                    for (let match of matchRows)
+        process(rows)
+            .then(resolve => {
+            })
+            .catch(error => {
+                console.log(error);
+                console.log("error after process promise");
+            });
+
+        function process(tournamentRows) {
+            return new Promise
+            (
+                function(resolve, reject) {
+                    var tInfo = '{"tournaments":[]}';
+                    var totalRows = 0;
+                    for (let row of tournamentRows)
                     {
-                        var obj = JSON.parse(tInfo);
+                        var counter = 0;
+                        function query(sql, args)
+                        {
+                            return new Promise((resolve, reject) =>
+                            {
+                                db.get().query(sql, args, (err, matchRows) => {
+                                    if (err)
+                                        return reject(err);
+                                    resolve(matchRows);
+                                });
+                            })
+                        }
+                        query("SELECT * FROM matches WHERE tournamentId = ?", row.tournamentid)
+                            .then((matchRows) =>
+                            {
 
-                        obj['tournaments'].push({
-                            "tournamentname": rows.name,
-                            "matches": {
-                                "matchid": match.matchid,
-                                "player1": match.homeTeamId,
-                                "player2": match.awayTeamId,
-                                "winner": match.winningTeamId,
-                                "isValid": match.isValid
-                            }
-                        });
+                                var obj = JSON.parse(tInfo);
 
-                        tInfo = JSON.stringify(obj);
+                                obj['tournaments'].push({
+                                    "tournamentname": row.name,
+                                    "tournamentID": row.tournamentid,
+                                    "matches": []
+                                });
+                                tInfo = JSON.stringify(obj);
+
+                                for (let match of matchRows) {
+                                    var obj = JSON.parse(tInfo);
+                                    obj['tournaments'][counter].matches.push({
+                                        "matchid": match.matchid,
+                                        "player1": match.homeTeamId,
+                                        "player2": match.awayTeamId,
+                                        "winner": match.winningTeamId,
+                                        "isValid": match.isValid
+                                    });
+
+                                    tInfo = JSON.stringify(obj);
+
+                                }
+                                counter++;
+                                totalRows++;
+                                if (totalRows === tournamentRows.length) {
+                                    console.log("how long can this go on")
+                                    done(null, tInfo);
+                                }
+                            })
+                            .catch((err) =>{
+                                console.log("error getting match rows");
+                                console.log(err);
+                            });
                     }
-                        callback(null, matchRows);
-                    });
-            },function(){
-                    cb(null,tInfo);
-                });
+                }
+            )
         }
     })
 };

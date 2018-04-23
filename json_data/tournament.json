@@ -19,8 +19,26 @@
   },
   {
     "tournamentid": 1,
-    "name": "tournament_0",
+    "name": "tournament user 6",
     "numDecks":3,
     "userid": 6
+  },
+  {
+    "tournamentid": 123,
+    "name": "tournament user 11",
+    "numDecks":3,
+    "userid": 11
+  },
+  {
+    "tournamentid": 80,
+    "name": "tournament user 14 two",
+    "numDecks":3,
+    "userid": 14
+  },
+  {
+    "tournamentid": 50,
+    "name": "tournament user 14",
+    "numDecks":3,
+    "userid": 14
   }
 ]

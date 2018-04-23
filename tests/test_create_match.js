@@ -27,8 +27,9 @@ describe('Test create_match functionality', function() {
             if (err) done(new Error(err.message));
 
             // test create match passing in valid input
-
+            
             server.get('/api/create_match?homeTeamId=012&awayTeamId=345&winningTeamId=012&tournamentid=1&isValid=1&matchDate=1000-01-01%2000:00:00')
+
                 .expect(200)
                 .end(function (err, res) {
                     if (err)
@@ -36,7 +37,7 @@ describe('Test create_match functionality', function() {
 
                     res.status.should.equal(200);
 
-                    res.text.should.equal('\{\"success\":true,\"id\":1\}');
+                    res.text.should.equal('\{\"success\":true,\"id\":988\}');
                     done();
                 })
         });
