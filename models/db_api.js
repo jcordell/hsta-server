@@ -383,7 +383,7 @@ exports.get_match= function(matchid, userid, done)
             else
             {
                 console.log('user is not a part of this match: return nothing');
-                done('invalid match request');
+                return done('invalid match request');
             }
 
             //DEBUG
