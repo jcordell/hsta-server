@@ -101,8 +101,8 @@ router.get('/delete_deck', function(req, res) {
  */
 var convert_card_list_to_json = function (cardlist, done) {
     var card_json = {};
-
     for (var i = 0; i < cardlist.length; i ++) {
+        console.log(cardlist[i]);
         card_json[cardlist[i][0]] = cardlist[i][1];
     }
     done(card_json);
@@ -117,8 +117,7 @@ var compare_played_deckjson_to_saved_deckstring = function(saved_deckjson, playe
     // iterate over every played card id
     for (var cardid in played_deckjson) {
         // played card should be in saveddeck have been played <= to num in saveddeck
-        console.log(cardid + " " + id_to_dbfid[cardid] + "-------------------------------");
-        if (id_to_dbfid[cardid] in saved_deckjson && saved_deckjson[cardid] >= played_deckjson[cardid]) {
+        if (id_to_dbfid[cardid] in saved_deckjson && saved_deckjson[id_to_dbfid[cardid]] >= played_deckjson[cardid]) {
         } else {
             return false;
         }
