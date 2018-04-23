@@ -364,6 +364,10 @@ exports.get_match= function(matchid, userid, done)
         else
         {
             //DEBUG
+            if (match_info.length == 0) {
+                return done('no match data found');
+            }
+
             console.log('tournamentid: ' + match_info[0].tournamentid);
             console.log(JSON.stringify(match_info));
 
