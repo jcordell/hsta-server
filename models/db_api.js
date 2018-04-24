@@ -368,14 +368,27 @@ exports.get_match= function(matchid, userid, done)
                 return done('no match data found');
             }
 
-            console.log('tournamentid: ' + match_info[0].tournamentid);
-            console.log(JSON.stringify(match_info));
+            else {
+                console.log('tournamentid: ' + match_info[0].tournamentid);
+                console.log(JSON.stringify(match_info));
 
+                var final_info = new Object();
+                final_info.matchId = match_info[0].matchid;
+                final_info.homeTeamId = match_info[0].homeTeamId;
+                final_info.awayTeamId = match_info[0].awayTeamId;
+                final_info.winningTeamId= match_info[0].winningTeamId;
+                final_info.tournamentId = match_info[0].tournamentid;
+                final_info.isValid = match_info[0].isValid;
+                final_info.matchDate = match_info[0].matchDate;
+                console.log(final_info);
+
+                done(null, final_info);
+            }
             //save tournamentid
-            var tid = match_info[0].tournamentid;
+           // var tid = match_info[0].tournamentid;
 
             //need to return opponents deckname and deckcode; finds out opponentid
-            var opp_id;
+          /*  var opp_id;
             if(userid == match_info[0].homeTeamId)
             {
                 opp_id = match_info[0].awayTeamId;
@@ -389,33 +402,20 @@ exports.get_match= function(matchid, userid, done)
                 console.log('user is not a part of this match: return nothing');
                 return done('invalid match request');
             }
-
-            /*
-            var final_info = new Object();
-            final_info.matchId = match_info[0].matchid;
-            final_info.homeTeamId = match_info[0].homeTeamId;
-            final_info.awayTeamId = match_info[0].awayTeamId;
-            final_info.winningTeamId= match_info[0].winningTeamId;
-            final_info.tournamentId = match_info[0].tournamentid;
-            final_info.isValid = match_info[0].isValid;
-            final_info.matchDate = match_info[0].matchDate;
-            final_info.oppId = opp_id;
-
-            return done(null, final_info);
-*/
-            
+            */
 
             //DEBUG
-            console.log("OPP_ID: " + opp_id);
+            //console.log("OPP_ID: " + opp_id);
 
             //arguments to be passed into next query
-            var args= [opp_id, tid]; //// [10, 4] for testing purposes
+           // var args= [opp_id, tid]; //// [10, 4] for testing purposes
 
             //DEBUG
-            console.log("arg1:" +args[0] + "arg2:"+ args[1]);
+            //console.log("arg1:" +args[0] + "arg2:"+ args[1]);
 
             //Now, select deckcode from decksInTournament to ensure valid decks being chosen
-            db.get().query("SELECT deckcode FROM decksInTournament WHERE userid = ? AND tournamentid = ?", args, function (err, deck_info)
+
+            /*db.get().query("SELECT deckcode FROM decksInTournament WHERE userid = ? AND tournamentid = ?", args, function (err, deck_info)
             {
                 if (err)
                 {
@@ -467,7 +467,7 @@ exports.get_match= function(matchid, userid, done)
                     })
                 }
 
-            })
+            }) */
 
 
         }
