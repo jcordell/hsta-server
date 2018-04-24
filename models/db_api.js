@@ -364,7 +364,7 @@ exports.get_match= function(matchid, userid, done)
         else
         {
             //DEBUG
-            if (match_info.length == 0) {
+            if (match_info[0] == undefined) {
                 return done('no match data found');
             }
 
