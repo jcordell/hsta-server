@@ -376,11 +376,11 @@ exports.get_match= function(matchid, userid, done)
 
             //need to return opponents deckname and deckcode; finds out opponentid
             var opp_id;
-            if(userid === match_info[0].homeTeamId)
+            if(userid == match_info[0].homeTeamId)
             {
                 opp_id = match_info[0].awayTeamId;
             }
-            else if(userid === match_info[0].awayTeamId)
+            else if(userid == match_info[0].awayTeamId)
             {
                 opp_id= match_info[0].homeTeamId;
             }
