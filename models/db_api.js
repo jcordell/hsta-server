@@ -27,9 +27,9 @@ exports.get_user_decklists = function(userId, done) {
 exports.get_user_tournament_decklists = function(userId, tournamentId, done) {
 
     // get the deckcode and deckname of tournaments in deck
-    db.get().query("SELECT deckname, deckcode FROM ownedBy WHERE deckcode IN " +
+    db.get().query("SELECT deckname, deckcode FROM ownedBy WHERE userid = ? AND deckcode IN " +
                         "(SELECT deckcode FROM decksInTournament WHERE userid = ? AND tournamentid = ?)",
-                        [userId, tournamentId], function (err, rows) {
+                        [userId, userId, tournamentId], function (err, rows) {
         if (err) {
             console.log('error in query');
             console.log(err.message);
